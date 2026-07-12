@@ -1,0 +1,1 @@
+enum RecordStatus { active, inactive }
