@@ -10,7 +10,7 @@ class RecentActivityItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSizes.spacingLg,
@@ -25,11 +25,7 @@ class RecentActivityItem extends StatelessWidget {
               color: _getIconColor().withAlpha(30),
               borderRadius: BorderRadius.circular(AppSizes.radiusMd),
             ),
-            child: Icon(
-              _getIcon(),
-              size: 20,
-              color: _getIconColor(),
-            ),
+            child: Icon(_getIcon(), size: 20, color: _getIconColor()),
           ),
           const SizedBox(width: AppSizes.spacingMd),
           Expanded(
@@ -70,21 +66,31 @@ class RecentActivityItem extends StatelessWidget {
 
   IconData _getIcon() {
     switch (activity.type) {
-      case ActivityType.registration: return Icons.add_business_outlined;
-      case ActivityType.allocation: return Icons.assignment_turned_in_outlined;
-      case ActivityType.transfer: return Icons.move_up_outlined;
-      case ActivityType.maintenance: return Icons.build_circle_outlined;
-      case ActivityType.audit: return Icons.fact_check_outlined;
+      case ActivityType.registration:
+        return Icons.add_business_outlined;
+      case ActivityType.allocation:
+        return Icons.assignment_turned_in_outlined;
+      case ActivityType.transfer:
+        return Icons.move_up_outlined;
+      case ActivityType.maintenance:
+        return Icons.build_circle_outlined;
+      case ActivityType.audit:
+        return Icons.fact_check_outlined;
     }
   }
 
   Color _getIconColor() {
     switch (activity.type) {
-      case ActivityType.registration: return Colors.blue;
-      case ActivityType.allocation: return Colors.green;
-      case ActivityType.transfer: return Colors.orange;
-      case ActivityType.maintenance: return Colors.red;
-      case ActivityType.audit: return Colors.purple;
+      case ActivityType.registration:
+        return Colors.blue;
+      case ActivityType.allocation:
+        return Colors.green;
+      case ActivityType.transfer:
+        return Colors.orange;
+      case ActivityType.maintenance:
+        return Colors.red;
+      case ActivityType.audit:
+        return Colors.purple;
     }
   }
 

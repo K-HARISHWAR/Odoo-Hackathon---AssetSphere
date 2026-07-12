@@ -25,15 +25,12 @@ class KPICard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSizes.radiusLg),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.05),
+            color: color.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(
-          color: color.withOpacity(0.1),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.1), width: 1),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppSizes.radiusLg),
@@ -45,7 +42,7 @@ class KPICard extends StatelessWidget {
               child: Icon(
                 icon,
                 size: 100,
-                color: color.withOpacity(0.03),
+                color: color.withValues(alpha: 0.03),
               ),
             ),
             Padding(
@@ -59,8 +56,10 @@ class KPICard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(AppSizes.spacingSm),
                         decoration: BoxDecoration(
-                          color: color.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                          color: color.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(
+                            AppSizes.radiusMd,
+                          ),
                         ),
                         child: Icon(icon, size: 20, color: color),
                       ),
@@ -72,13 +71,15 @@ class KPICard extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             color: (trend! >= 0 ? Colors.green : Colors.red)
-                                .withOpacity(0.1),
+                                .withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Row(
                             children: [
                               Icon(
-                                trend! >= 0 ? Icons.arrow_upward : Icons.arrow_downward,
+                                trend! >= 0
+                                    ? Icons.arrow_upward
+                                    : Icons.arrow_downward,
                                 size: 12,
                                 color: trend! >= 0 ? Colors.green : Colors.red,
                               ),
@@ -88,7 +89,9 @@ class KPICard extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: trend! >= 0 ? Colors.green : Colors.red,
+                                  color: trend! >= 0
+                                      ? Colors.green
+                                      : Colors.red,
                                 ),
                               ),
                             ],
@@ -102,7 +105,8 @@ class KPICard extends StatelessWidget {
                     children: [
                       Text(
                         value,
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
                               fontWeight: FontWeight.bold,
                               letterSpacing: -1,
                             ),
@@ -112,9 +116,9 @@ class KPICard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              fontWeight: FontWeight.w500,
-                            ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
                   ),

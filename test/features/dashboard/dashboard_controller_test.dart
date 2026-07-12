@@ -17,7 +17,7 @@ void main() {
 
   test('should load dashboard data correctly', () async {
     await controller.loadDashboardData();
-    
+
     expect(controller.kpis, isNotEmpty);
     expect(controller.activities, isNotEmpty);
     expect(controller.statusSummary, isNotEmpty);

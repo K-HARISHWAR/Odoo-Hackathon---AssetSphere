@@ -23,7 +23,7 @@ class _QuickActionButtonState extends State<QuickActionButton> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _isPressed = true),
       onTapUp: (_) => setState(() => _isPressed = false),
@@ -39,18 +39,28 @@ class _QuickActionButtonState extends State<QuickActionButton> {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: theme.colorScheme.primaryContainer.withAlpha(_isPressed ? 80 : 50),
+                color: theme.colorScheme.primaryContainer.withAlpha(
+                  _isPressed ? 80 : 50,
+                ),
                 borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-                border: Border.all(color: theme.colorScheme.primary.withAlpha(30)),
-                boxShadow: _isPressed ? [] : [
-                  BoxShadow(
-                    color: theme.colorScheme.primary.withAlpha(10),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  )
-                ],
+                border: Border.all(
+                  color: theme.colorScheme.primary.withAlpha(30),
+                ),
+                boxShadow: _isPressed
+                    ? []
+                    : [
+                        BoxShadow(
+                          color: theme.colorScheme.primary.withAlpha(10),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
               ),
-              child: Icon(widget.icon, color: theme.colorScheme.primary, size: 24),
+              child: Icon(
+                widget.icon,
+                color: theme.colorScheme.primary,
+                size: 24,
+              ),
             ),
             const SizedBox(height: AppSizes.spacingSm),
             Text(
