@@ -11,7 +11,7 @@ class StatusBadge extends StatelessWidget {
     final isActive = status == RecordStatus.active;
     final color = isActive ? Colors.green : Colors.grey;
     final text = isActive ? 'Active' : 'Inactive';
-    final bgColor = color.withOpacity(0.1);
+    final bgColor = color.withValues(alpha: 0.1);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

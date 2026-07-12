@@ -37,7 +37,7 @@ class OrganizationFilterBar extends StatelessWidget {
               onChanged: onSearchChanged,
             ),
           ),
-          if (filterDropdown != null) filterDropdown!,
+          ?filterDropdown,
           if (onClearFilters != null)
             TextButton.icon(
               onPressed: onClearFilters,

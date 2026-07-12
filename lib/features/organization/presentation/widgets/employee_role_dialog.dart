@@ -45,7 +45,7 @@ class _EmployeeRoleDialogState extends State<EmployeeRoleDialog> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<EmployeeRole>(
-              value: _selectedRole,
+              initialValue: _selectedRole,
               decoration: const InputDecoration(
                 labelText: 'New Role',
                 border: OutlineInputBorder(),
@@ -75,7 +75,7 @@ class _EmployeeRoleDialogState extends State<EmployeeRoleDialog> {
               id: widget.employee.id,
               newRole: _selectedRole,
             );
-            if (success && mounted) {
+            if (success && context.mounted) {
               Navigator.pop(context);
             }
           },

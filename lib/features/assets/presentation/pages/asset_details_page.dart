@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../domain/entities/asset_status.dart';
-import '../../data/repositories/mock_asset_repository.dart';
+import '../../data/repositories/asset_repository_impl.dart';
+import '../../data/datasources/assets_mock_datasource.dart';
 import '../controllers/asset_details_controller.dart';
 
 class AssetDetailsPage extends StatefulWidget {
@@ -19,7 +20,9 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
   @override
   void initState() {
     super.initState();
-    _controller = AssetDetailsController(repository: MockAssetRepository());
+    _controller = AssetDetailsController(
+      repository: AssetRepositoryImpl(dataSource: AssetsMockDataSource()),
+    );
     _controller.loadAssetDetails(widget.assetId);
   }
 
@@ -32,7 +35,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       backgroundColor: theme.colorScheme.surface.withAlpha(245),
       appBar: AppBar(
@@ -42,35 +45,59 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
           padding: const EdgeInsets.only(left: 12),
           child: Center(
             child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: Colors.white),
+              icon: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 20,
+                color: Colors.white,
+              ),
               style: IconButton.styleFrom(
                 backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               onPressed: () => Navigator.pop(context),
             ),
           ),
         ),
-        title: const Text('Asset Profile', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Asset Profile',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         surfaceTintColor: Colors.transparent,
         backgroundColor: theme.colorScheme.surface,
         elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Divider(height: 1, color: theme.colorScheme.outlineVariant.withAlpha(100)),
+          child: Divider(
+            height: 1,
+            color: theme.colorScheme.outlineVariant.withAlpha(100),
+          ),
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.edit_outlined), tooltip: 'Edit'),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.share_outlined), tooltip: 'Share'),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.edit_outlined),
+            tooltip: 'Edit',
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.share_outlined),
+            tooltip: 'Share',
+          ),
           const SizedBox(width: AppSizes.spacingMd),
         ],
       ),
       body: ListenableBuilder(
         listenable: _controller,
         builder: (context, _) {
-          if (_controller.isLoading) return const Center(child: CircularProgressIndicator());
+          if (_controller.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
           final asset = _controller.asset;
-          if (asset == null) return const Center(child: Text('Asset not found'));
+          if (asset == null) {
+            return const Center(child: Text('Asset not found'));
+          }
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(AppSizes.spacingLg),
@@ -82,26 +109,34 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
                   children: [
                     _buildTopBanner(theme, asset),
                     const SizedBox(height: AppSizes.spacingLg),
-                    LayoutBuilder(builder: (context, constraints) {
-                      if (constraints.maxWidth > 750) {
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(flex: 3, child: _buildInfoGrid(theme, asset)),
-                            const SizedBox(width: AppSizes.spacingLg),
-                            Expanded(flex: 2, child: _buildTimelineSide(theme)),
-                          ],
-                        );
-                      } else {
-                        return Column(
-                          children: [
-                            _buildInfoGrid(theme, asset),
-                            const SizedBox(height: AppSizes.spacingLg),
-                            _buildTimelineSide(theme),
-                          ],
-                        );
-                      }
-                    }),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        if (constraints.maxWidth > 750) {
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: _buildInfoGrid(theme, asset),
+                              ),
+                              const SizedBox(width: AppSizes.spacingLg),
+                              Expanded(
+                                flex: 2,
+                                child: _buildTimelineSide(theme),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Column(
+                            children: [
+                              _buildInfoGrid(theme, asset),
+                              const SizedBox(height: AppSizes.spacingLg),
+                              _buildTimelineSide(theme),
+                            ],
+                          );
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -126,10 +161,14 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
             width: 100,
             height: 100,
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceVariant.withAlpha(100),
+              color: theme.colorScheme.surfaceContainerHighest.withAlpha(100),
               borderRadius: BorderRadius.circular(AppSizes.radiusLg),
             ),
-            child: Icon(Icons.devices_other, size: 48, color: theme.colorScheme.primary.withAlpha(150)),
+            child: Icon(
+              Icons.devices_other,
+              size: 48,
+              color: theme.colorScheme.primary.withAlpha(150),
+            ),
           ),
           const SizedBox(width: AppSizes.spacingLg),
           Expanded(
@@ -145,20 +184,42 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
                       child: Material(
                         color: Colors.transparent,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.primaryContainer.withAlpha(100),
+                            color: theme.colorScheme.primaryContainer.withAlpha(
+                              100,
+                            ),
                             borderRadius: BorderRadius.circular(4),
                           ),
-                          child: Text(asset.assetTag, style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 12)),
+                          child: Text(
+                            asset.assetTag,
+                            style: TextStyle(
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
-                Text(asset.name, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
-                Text(asset.category, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                Text(
+                  asset.name,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  asset.category,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
               ],
             ),
           ),
@@ -177,7 +238,10 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
           items: [
             {'label': 'Location', 'value': asset.location},
             {'label': 'Department', 'value': asset.department},
-            {'label': 'Serial Number', 'value': asset.serialNumber ?? 'Not assigned'},
+            {
+              'label': 'Serial Number',
+              'value': asset.serialNumber ?? 'Not assigned',
+            },
           ],
         ),
         const SizedBox(height: AppSizes.spacingLg),
@@ -186,10 +250,25 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
           title: 'Lifecycle & Value',
           icon: Icons.history_edu_outlined,
           items: [
-            {'label': 'Purchase Date', 'value': '${asset.purchaseDate.day}/${asset.purchaseDate.month}/${asset.purchaseDate.year}'},
-            {'label': 'Purchase Cost', 'value': '₹${asset.purchaseCost.toStringAsFixed(2)}'},
-            {'label': 'Warranty Exp.', 'value': asset.warrantyExpiry != null ? '${asset.warrantyExpiry!.day}/${asset.warrantyExpiry!.month}/${asset.warrantyExpiry!.year}' : 'No warranty'},
-            {'label': 'Current Condition', 'value': asset.condition.name.toUpperCase()},
+            {
+              'label': 'Purchase Date',
+              'value':
+                  '${asset.purchaseDate.day}/${asset.purchaseDate.month}/${asset.purchaseDate.year}',
+            },
+            {
+              'label': 'Purchase Cost',
+              'value': '₹${asset.purchaseCost.toStringAsFixed(2)}',
+            },
+            {
+              'label': 'Warranty Exp.',
+              'value': asset.warrantyExpiry != null
+                  ? '${asset.warrantyExpiry!.day}/${asset.warrantyExpiry!.month}/${asset.warrantyExpiry!.year}'
+                  : 'No warranty',
+            },
+            {
+              'label': 'Current Condition',
+              'value': asset.condition.name.toUpperCase(),
+            },
           ],
         ),
       ],
@@ -216,20 +295,37 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
             children: [
               Icon(icon, size: 20, color: theme.colorScheme.primary),
               const SizedBox(width: 8),
-              Text(title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
           const Divider(height: 32),
-          ...items.map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(item['label']!, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-                    Text(item['value']!, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              )),
+          ...items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    item['label']!,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  Text(
+                    item['value']!,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -246,14 +342,22 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Activity Timeline', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            'Activity Timeline',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: AppSizes.spacingLg),
-          ..._controller.history.map((h) => _TimelineItem(
-                title: h.action,
-                subtitle: h.description,
-                time: '${h.timestamp.day}/${h.timestamp.month} ${h.timestamp.hour}:${h.timestamp.minute}',
-                isLast: _controller.history.last == h,
-              )),
+          ..._controller.history.map(
+            (h) => _TimelineItem(
+              title: h.action,
+              subtitle: h.description,
+              time:
+                  '${h.timestamp.day}/${h.timestamp.month} ${h.timestamp.hour}:${h.timestamp.minute}',
+              isLast: _controller.history.last == h,
+            ),
+          ),
         ],
       ),
     );
@@ -274,18 +378,28 @@ class _StatusBadge extends StatelessWidget {
       ),
       child: Text(
         status.displayName.toUpperCase(),
-        style: TextStyle(color: _getColor(), fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+        style: TextStyle(
+          color: _getColor(),
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }
 
   Color _getColor() {
     switch (status) {
-      case AssetStatus.available: return Colors.green;
-      case AssetStatus.allocated: return Colors.blue;
-      case AssetStatus.maintenance: return Colors.orange;
-      case AssetStatus.lost: return Colors.red;
-      default: return Colors.grey;
+      case AssetStatus.available:
+        return Colors.green;
+      case AssetStatus.allocated:
+        return Colors.blue;
+      case AssetStatus.maintenance:
+        return Colors.orange;
+      case AssetStatus.lost:
+        return Colors.red;
+      default:
+        return Colors.grey;
     }
   }
 }
@@ -296,7 +410,12 @@ class _TimelineItem extends StatelessWidget {
   final String time;
   final bool isLast;
 
-  const _TimelineItem({required this.title, required this.subtitle, required this.time, this.isLast = false});
+  const _TimelineItem({
+    required this.title,
+    required this.subtitle,
+    required this.time,
+    this.isLast = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -312,10 +431,19 @@ class _TimelineItem extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary,
                   shape: BoxShape.circle,
-                  border: Border.all(color: theme.colorScheme.primaryContainer, width: 2),
+                  border: Border.all(
+                    color: theme.colorScheme.primaryContainer,
+                    width: 2,
+                  ),
                 ),
               ),
-              if (!isLast) Expanded(child: VerticalDivider(thickness: 1.5, color: theme.colorScheme.outlineVariant)),
+              if (!isLast)
+                Expanded(
+                  child: VerticalDivider(
+                    thickness: 1.5,
+                    color: theme.colorScheme.outlineVariant,
+                  ),
+                ),
             ],
           ),
           const SizedBox(width: AppSizes.spacingMd),
@@ -325,9 +453,19 @@ class _TimelineItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+                  Text(
+                    title,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   Text(subtitle, style: theme.textTheme.bodySmall),
-                  Text(time, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                  Text(
+                    time,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ],
               ),
             ),

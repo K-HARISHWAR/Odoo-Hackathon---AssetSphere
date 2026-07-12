@@ -25,7 +25,7 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
   final _locationController = TextEditingController();
   final _departmentController = TextEditingController();
   final _costController = TextEditingController();
-  
+
   DateTime _purchaseDate = DateTime.now();
   DateTime? _warrantyExpiry;
   AssetCondition _condition = AssetCondition.newCondition;
@@ -37,18 +37,44 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
   String? _selectedDepartment;
 
   final List<String> _categories = [
-    'Laptop', 'Desktop', 'Monitor', 'Tablet', 'Phone', 'Printer', 'Projector',
-    'Office Chair', 'Desk', 'Vehicle', 'Server', 'Networking Gear', 'Software License', 'Others'
+    'Laptop',
+    'Desktop',
+    'Monitor',
+    'Tablet',
+    'Phone',
+    'Printer',
+    'Projector',
+    'Office Chair',
+    'Desk',
+    'Vehicle',
+    'Server',
+    'Networking Gear',
+    'Software License',
+    'Others',
   ];
 
   final List<String> _locations = [
-    'Main HQ', 'Branch Office North', 'Branch Office South', 'Warehouse A',
-    'Remote / Home Office', 'Client Site', 'In Transit', 'Others'
+    'Main HQ',
+    'Branch Office North',
+    'Branch Office South',
+    'Warehouse A',
+    'Remote / Home Office',
+    'Client Site',
+    'In Transit',
+    'Others',
   ];
 
   final List<String> _departments = [
-    'IT / Technology', 'Human Resources', 'Finance', 'Marketing', 'Sales',
-    'Operations', 'Logistics', 'Administration', 'Legal', 'Others'
+    'IT / Technology',
+    'Human Resources',
+    'Finance',
+    'Marketing',
+    'Sales',
+    'Operations',
+    'Logistics',
+    'Administration',
+    'Legal',
+    'Others',
   ];
 
   @override
@@ -57,7 +83,7 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
     final dataSource = AssetsMockDataSource();
     final repository = AssetRepositoryImpl(dataSource: dataSource);
     final useCase = AddAssetUseCase(repository);
-    
+
     _controller = AssetRegistrationController(
       repository: repository,
       addAsset: useCase,
@@ -80,7 +106,7 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       backgroundColor: theme.colorScheme.surface.withAlpha(245),
       appBar: AppBar(
@@ -90,22 +116,34 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
           padding: const EdgeInsets.only(left: 12),
           child: Center(
             child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: Colors.white),
+              icon: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 20,
+                color: Colors.white,
+              ),
               style: IconButton.styleFrom(
                 backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               onPressed: () => Navigator.pop(context),
             ),
           ),
         ),
-        title: const Text('Register New Asset', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Register New Asset',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         surfaceTintColor: Colors.transparent,
         backgroundColor: theme.colorScheme.surface,
         elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Divider(height: 1, color: theme.colorScheme.outlineVariant.withAlpha(100)),
+          child: Divider(
+            height: 1,
+            color: theme.colorScheme.outlineVariant.withAlpha(100),
+          ),
         ),
       ),
       body: ListenableBuilder(
@@ -138,7 +176,8 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                                 child: _buildTextField(
                                   label: 'Asset Name *',
                                   controller: _nameController,
-                                  validator: (v) => v?.isEmpty ?? true ? 'Required' : null,
+                                  validator: (v) =>
+                                      v?.isEmpty ?? true ? 'Required' : null,
                                 ),
                               ),
                               const SizedBox(width: AppSizes.spacingMd),
@@ -152,7 +191,7 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                           ),
                           const SizedBox(height: AppSizes.spacingMd),
                           DropdownButtonFormField<String>(
-                            value: _selectedCategory,
+                            initialValue: _selectedCategory,
                             decoration: _getInputDecoration('Category *'),
                             items: _categories.map((String category) {
                               return DropdownMenuItem<String>(
@@ -170,14 +209,17 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                                 }
                               });
                             },
-                            validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                            validator: (v) =>
+                                v == null || v.isEmpty ? 'Required' : null,
                           ),
                           if (_selectedCategory == 'Others') ...[
                             const SizedBox(height: AppSizes.spacingMd),
                             _buildTextField(
                               label: 'Specify Other Category *',
                               controller: _categoryController,
-                              validator: (v) => v?.isEmpty ?? true ? 'Please specify category' : null,
+                              validator: (v) => v?.isEmpty ?? true
+                                  ? 'Please specify category'
+                                  : null,
                             ),
                           ],
                         ],
@@ -195,8 +237,10 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                                 child: Column(
                                   children: [
                                     DropdownButtonFormField<String>(
-                                      value: _selectedLocation,
-                                      decoration: _getInputDecoration('Location *'),
+                                      initialValue: _selectedLocation,
+                                      decoration: _getInputDecoration(
+                                        'Location *',
+                                      ),
                                       items: _locations.map((String loc) {
                                         return DropdownMenuItem<String>(
                                           value: loc,
@@ -207,20 +251,27 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                                         setState(() {
                                           _selectedLocation = newValue;
                                           if (newValue != 'Others') {
-                                            _locationController.text = newValue ?? '';
+                                            _locationController.text =
+                                                newValue ?? '';
                                           } else {
                                             _locationController.clear();
                                           }
                                         });
                                       },
-                                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                                      validator: (v) => v == null || v.isEmpty
+                                          ? 'Required'
+                                          : null,
                                     ),
                                     if (_selectedLocation == 'Others') ...[
-                                      const SizedBox(height: AppSizes.spacingMd),
+                                      const SizedBox(
+                                        height: AppSizes.spacingMd,
+                                      ),
                                       _buildTextField(
                                         label: 'Specify Location *',
                                         controller: _locationController,
-                                        validator: (v) => v?.isEmpty ?? true ? 'Required' : null,
+                                        validator: (v) => v?.isEmpty ?? true
+                                            ? 'Required'
+                                            : null,
                                       ),
                                     ],
                                   ],
@@ -231,8 +282,10 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                                 child: Column(
                                   children: [
                                     DropdownButtonFormField<String>(
-                                      value: _selectedDepartment,
-                                      decoration: _getInputDecoration('Department *'),
+                                      initialValue: _selectedDepartment,
+                                      decoration: _getInputDecoration(
+                                        'Department *',
+                                      ),
                                       items: _departments.map((String dept) {
                                         return DropdownMenuItem<String>(
                                           value: dept,
@@ -243,20 +296,27 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                                         setState(() {
                                           _selectedDepartment = newValue;
                                           if (newValue != 'Others') {
-                                            _departmentController.text = newValue ?? '';
+                                            _departmentController.text =
+                                                newValue ?? '';
                                           } else {
                                             _departmentController.clear();
                                           }
                                         });
                                       },
-                                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                                      validator: (v) => v == null || v.isEmpty
+                                          ? 'Required'
+                                          : null,
                                     ),
                                     if (_selectedDepartment == 'Others') ...[
-                                      const SizedBox(height: AppSizes.spacingMd),
+                                      const SizedBox(
+                                        height: AppSizes.spacingMd,
+                                      ),
                                       _buildTextField(
                                         label: 'Specify Department *',
                                         controller: _departmentController,
-                                        validator: (v) => v?.isEmpty ?? true ? 'Required' : null,
+                                        validator: (v) => v?.isEmpty ?? true
+                                            ? 'Required'
+                                            : null,
                                       ),
                                     ],
                                   ],
@@ -266,12 +326,16 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                           ),
                           const SizedBox(height: AppSizes.spacingMd),
                           DropdownButtonFormField<AssetCondition>(
-                            value: _condition,
+                            initialValue: _condition,
                             decoration: _getInputDecoration('Condition *'),
-                            items: AssetCondition.values.map((c) => DropdownMenuItem(
-                              value: c,
-                              child: Text(c.displayName),
-                            )).toList(),
+                            items: AssetCondition.values
+                                .map(
+                                  (c) => DropdownMenuItem(
+                                    value: c,
+                                    child: Text(c.displayName),
+                                  ),
+                                )
+                                .toList(),
                             onChanged: (v) => setState(() => _condition = v!),
                           ),
                         ],
@@ -295,7 +359,9 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                                       firstDate: DateTime(2000),
                                       lastDate: DateTime.now(),
                                     );
-                                    if (date != null) setState(() => _purchaseDate = date);
+                                    if (date != null) {
+                                      setState(() => _purchaseDate = date);
+                                    }
                                   },
                                 ),
                               ),
@@ -309,7 +375,9 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                                   validator: (v) {
                                     if (v?.isEmpty ?? true) return 'Required';
                                     final val = double.tryParse(v!);
-                                    if (val == null || val <= 0) return 'Invalid amount';
+                                    if (val == null || val <= 0) {
+                                      return 'Invalid amount';
+                                    }
                                     return null;
                                   },
                                 ),
@@ -323,11 +391,17 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                             onTap: () async {
                               final date = await showDatePicker(
                                 context: context,
-                                initialDate: _warrantyExpiry ?? DateTime.now().add(const Duration(days: 365)),
+                                initialDate:
+                                    _warrantyExpiry ??
+                                    DateTime.now().add(
+                                      const Duration(days: 365),
+                                    ),
                                 firstDate: DateTime.now(),
                                 lastDate: DateTime(2100),
                               );
-                              if (date != null) setState(() => _warrantyExpiry = date);
+                              if (date != null) {
+                                setState(() => _warrantyExpiry = date);
+                              }
                             },
                           ),
                         ],
@@ -340,7 +414,9 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                         children: [
                           SwitchListTile(
                             title: const Text('Shared Resource'),
-                            subtitle: const Text('Accessible across departments'),
+                            subtitle: const Text(
+                              'Accessible across departments',
+                            ),
                             value: _isShared,
                             contentPadding: EdgeInsets.zero,
                             onChanged: (v) => setState(() {
@@ -350,10 +426,14 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                           ),
                           SwitchListTile(
                             title: const Text('Bookable'),
-                            subtitle: const Text('Allow time-based reservations'),
+                            subtitle: const Text(
+                              'Allow time-based reservations',
+                            ),
                             value: _isBookable,
                             contentPadding: EdgeInsets.zero,
-                            onChanged: _isShared ? (v) => setState(() => _isBookable = v) : null,
+                            onChanged: _isShared
+                                ? (v) => setState(() => _isBookable = v)
+                                : null,
                           ),
                         ],
                       ),
@@ -376,7 +456,10 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
       padding: const EdgeInsets.all(AppSizes.spacingLg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [theme.colorScheme.primary, theme.colorScheme.primary.withAlpha(200)],
+          colors: [
+            theme.colorScheme.primary,
+            theme.colorScheme.primary.withAlpha(200),
+          ],
         ),
         borderRadius: BorderRadius.circular(AppSizes.radiusLg),
       ),
@@ -393,8 +476,15 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                   style: TextStyle(color: Colors.white70, fontSize: 12),
                 ),
                 Text(
-                  _controller.generatedTag.isEmpty ? 'Generating...' : _controller.generatedTag,
-                  style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 2),
+                  _controller.generatedTag.isEmpty
+                      ? 'Generating...'
+                      : _controller.generatedTag,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
                 ),
               ],
             ),
@@ -405,7 +495,14 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
               color: Colors.white.withAlpha(50),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Text('PENDING', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10)),
+            child: const Text(
+              'PENDING',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 10,
+              ),
+            ),
           ),
         ],
       ),
@@ -438,7 +535,9 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
                   const SizedBox(width: 8),
                   Text(
                     title,
-                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -479,7 +578,9 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
           suffixIcon: const Icon(Icons.calendar_today_rounded, size: 18),
         ),
         child: Text(
-          value != null ? '${value.day}/${value.month}/${value.year}' : 'Select Date',
+          value != null
+              ? '${value.day}/${value.month}/${value.year}'
+              : 'Select Date',
           style: TextStyle(color: value == null ? Colors.grey : null),
         ),
       ),
@@ -492,7 +593,7 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
       labelText: label,
       labelStyle: const TextStyle(fontSize: 14),
       filled: true,
-      fillColor: theme.colorScheme.surfaceVariant.withAlpha(50),
+      fillColor: theme.colorScheme.surfaceContainerHighest.withAlpha(50),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
         borderSide: BorderSide(color: theme.colorScheme.outlineVariant),
@@ -501,7 +602,10 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
         borderSide: BorderSide(color: theme.colorScheme.outlineVariant),
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: AppSizes.spacingMd, vertical: 12),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSizes.spacingMd,
+        vertical: 12,
+      ),
     );
   }
 
@@ -514,12 +618,17 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
           backgroundColor: theme.colorScheme.primary,
           foregroundColor: theme.colorScheme.onPrimary,
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusLg)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+          ),
         ),
         onPressed: _controller.isLoading ? null : _submit,
         child: _controller.isLoading
             ? const CircularProgressIndicator(color: Colors.white)
-            : const Text('Complete Registration', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            : const Text(
+                'Complete Registration',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
       ),
     );
   }
@@ -528,7 +637,9 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
     if (_formKey.currentState!.validate()) {
       final success = await _controller.submitRegistration(
         name: _nameController.text,
-        serialNumber: _serialController.text.isEmpty ? null : _serialController.text,
+        serialNumber: _serialController.text.isEmpty
+            ? null
+            : _serialController.text,
         category: _categoryController.text,
         location: _locationController.text,
         department: _departmentController.text,

@@ -54,9 +54,15 @@ class AssetModel extends Asset {
       department: json['department'],
       purchaseDate: DateTime.parse(json['purchaseDate']),
       purchaseCost: (json['purchaseCost'] as num).toDouble(),
-      warrantyExpiry: json['warrantyExpiry'] != null ? DateTime.parse(json['warrantyExpiry']) : null,
-      condition: AssetCondition.values.firstWhere((e) => e.toString() == json['condition']),
-      status: AssetStatus.values.firstWhere((e) => e.toString() == json['status']),
+      warrantyExpiry: json['warrantyExpiry'] != null
+          ? DateTime.parse(json['warrantyExpiry'])
+          : null,
+      condition: AssetCondition.values.firstWhere(
+        (e) => e.toString() == json['condition'],
+      ),
+      status: AssetStatus.values.firstWhere(
+        (e) => e.toString() == json['status'],
+      ),
       isShared: json['isShared'] ?? false,
       isBookable: json['isBookable'] ?? false,
       photoUrl: json['photoUrl'],

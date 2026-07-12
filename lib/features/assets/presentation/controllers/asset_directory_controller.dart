@@ -42,11 +42,16 @@ class AssetDirectoryController extends ChangeNotifier {
 
   void _applyFilters() {
     _filteredAssets = _allAssets.where((asset) {
-      final matchesSearch = asset.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+      final matchesSearch =
+          asset.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           asset.assetTag.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          (asset.serialNumber?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
-      
-      final matchesStatus = _statusFilter == null || asset.status == _statusFilter;
+          (asset.serialNumber?.toLowerCase().contains(
+                _searchQuery.toLowerCase(),
+              ) ??
+              false);
+
+      final matchesStatus =
+          _statusFilter == null || asset.status == _statusFilter;
 
       return matchesSearch && matchesStatus;
     }).toList();

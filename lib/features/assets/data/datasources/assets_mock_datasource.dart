@@ -12,7 +12,33 @@ abstract class AssetsDataSource {
 }
 
 class AssetsMockDataSource implements AssetsDataSource {
-  final List<AssetModel> _assets = [];
+  final List<AssetModel> _assets = [
+    AssetModel(
+      id: '1',
+      assetTag: 'AF-0001',
+      name: 'MacBook Pro M3',
+      serialNumber: 'MBP-2023-001',
+      category: 'IT Equipment',
+      location: 'HQ Building A',
+      department: 'Engineering',
+      purchaseDate: DateTime.now().subtract(const Duration(days: 100)),
+      purchaseCost: 2500.00,
+      condition: AssetCondition.newCondition,
+      status: AssetStatus.allocated,
+    ),
+    AssetModel(
+      id: '2',
+      assetTag: 'AF-0002',
+      name: 'Herman Miller Chair',
+      category: 'Furniture',
+      location: 'HQ Building A',
+      department: 'Operations',
+      purchaseDate: DateTime.now().subtract(const Duration(days: 300)),
+      purchaseCost: 1200.00,
+      condition: AssetCondition.good,
+      status: AssetStatus.available,
+    ),
+  ];
 
   @override
   Future<List<AssetModel>> getAssets() async {

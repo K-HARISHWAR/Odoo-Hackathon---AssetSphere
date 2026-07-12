@@ -100,7 +100,7 @@ class _DepartmentFormDialogState extends State<DepartmentFormDialog> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   margin: const EdgeInsets.only(bottom: 16),
-                  color: Colors.red.withOpacity(0.1),
+                  color: Colors.red.withValues(alpha: 0.1),
                   child: Text(
                     widget.controller.errorMessage!,
                     style: const TextStyle(color: Colors.red),
@@ -130,7 +130,8 @@ class _DepartmentFormDialogState extends State<DepartmentFormDialog> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String?>(
-                value: availableParents.any((d) => d.id == _selectedParentId)
+                initialValue:
+                    availableParents.any((d) => d.id == _selectedParentId)
                     ? _selectedParentId
                     : null,
                 decoration: const InputDecoration(
@@ -150,7 +151,7 @@ class _DepartmentFormDialogState extends State<DepartmentFormDialog> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String?>(
-                value: availableHeads.any((e) => e.id == _selectedHeadId)
+                initialValue: availableHeads.any((e) => e.id == _selectedHeadId)
                     ? _selectedHeadId
                     : null,
                 decoration: const InputDecoration(

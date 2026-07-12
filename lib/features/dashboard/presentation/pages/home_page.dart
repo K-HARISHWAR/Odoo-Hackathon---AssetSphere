@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
     final dataSource = DashboardMockDataSource();
     final repository = DashboardRepositoryImpl(dataSource: dataSource);
     final useCase = GetDashboardDataUseCase(repository);
-    
+
     _controller = DashboardController(getDashboardData: useCase);
     _controller.loadDashboardData();
   }
@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       backgroundColor: theme.colorScheme.surface.withAlpha(240),
       appBar: AppBar(
@@ -74,21 +74,34 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Notifications module will be implemented by Developer 1'),
+                  content: Text(
+                    'Notifications module will be implemented by Developer 1',
+                  ),
                 ),
               );
             },
             icon: Badge(
-              isLabelVisible: false, // Set to false to remove fake notification count
+              isLabelVisible:
+                  false, // Set to false to remove fake notification count
               label: const Text('0'),
-              child: Icon(Icons.notifications_outlined, color: theme.colorScheme.onSurfaceVariant),
+              child: Icon(
+                Icons.notifications_outlined,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
           const SizedBox(width: AppSizes.spacingMd),
           const CircleAvatar(
             radius: 18,
             backgroundColor: Colors.blueAccent,
-            child: Text('AD', style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold)),
+            child: Text(
+              'AD',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           const SizedBox(width: AppSizes.spacingMd),
         ],
@@ -103,7 +116,9 @@ class _HomePageState extends State<HomePage> {
           return SingleChildScrollView(
             child: Center(
               child: Container(
-                constraints: const BoxConstraints(maxWidth: AppSizes.maxDesktopContentWidth),
+                constraints: const BoxConstraints(
+                  maxWidth: AppSizes.maxDesktopContentWidth,
+                ),
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSizes.spacingLg,
                   vertical: AppSizes.spacingLg,
@@ -132,7 +147,9 @@ class _HomePageState extends State<HomePage> {
       height: 40,
       margin: const EdgeInsets.only(right: AppSizes.spacingMd),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant.withAlpha(100),
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withAlpha(100),
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
       ),
       child: TextField(
@@ -182,8 +199,10 @@ class _HomePageState extends State<HomePage> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        int crossAxisCount = constraints.maxWidth > 1000 ? 3 : (constraints.maxWidth > 600 ? 2 : 1);
-        
+        int crossAxisCount = constraints.maxWidth > 1000
+            ? 3
+            : (constraints.maxWidth > 600 ? 2 : 1);
+
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -275,7 +294,12 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Asset Distribution', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                'Asset Distribution',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: AppSizes.spacingLg),
               AssetStatusChart(summary: _controller.statusSummary),
             ],
@@ -289,7 +313,12 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Operations', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+        Text(
+          'Operations',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         const SizedBox(height: AppSizes.spacingMd),
         Container(
           clipBehavior: Clip.antiAlias,
@@ -341,7 +370,12 @@ class _HomePageState extends State<HomePage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Recent Activities', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              'Recent Activities',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             TextButton(onPressed: () {}, child: const Text('See all log')),
           ],
         ),
@@ -359,7 +393,8 @@ class _HomePageState extends State<HomePage> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: _controller.activities.length,
-              separatorBuilder: (context, index) => Divider(height: 1, color: theme.colorScheme.outlineVariant),
+              separatorBuilder: (context, index) =>
+                  Divider(height: 1, color: theme.colorScheme.outlineVariant),
               itemBuilder: (context, index) {
                 return TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0.0, end: 1.0),
@@ -373,7 +408,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   },
-                  child: RecentActivityItem(activity: _controller.activities[index]),
+                  child: RecentActivityItem(
+                    activity: _controller.activities[index],
+                  ),
                 );
               },
             ),

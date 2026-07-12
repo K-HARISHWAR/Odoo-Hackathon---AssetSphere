@@ -1,10 +1,4 @@
-enum ActivityType {
-  registration,
-  allocation,
-  transfer,
-  maintenance,
-  audit,
-}
+enum ActivityType { registration, allocation, transfer, maintenance, audit }
 
 class RecentActivity {
   final String id;

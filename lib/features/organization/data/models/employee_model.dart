@@ -1,6 +1,4 @@
 import 'package:assetsphere/features/organization/domain/entities/employee.dart';
-import 'package:assetsphere/features/organization/domain/entities/employee_role.dart';
-import 'package:assetsphere/features/organization/domain/entities/record_status.dart';
 
 class EmployeeModel extends Employee {
   const EmployeeModel({

@@ -25,7 +25,9 @@ class AssetStatusChart extends StatelessWidget {
                     child: CircularProgressIndicator(
                       value: total > 0 ? 1.0 : 0.0,
                       strokeWidth: 12,
-                      backgroundColor: Theme.of(context).colorScheme.outlineVariant,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.outlineVariant,
                       color: Theme.of(context).colorScheme.primary,
                       strokeCap: StrokeCap.round,
                     ),
@@ -37,7 +39,8 @@ class AssetStatusChart extends StatelessWidget {
                     children: [
                       Text(
                         '$total',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.onSurface,
                             ),
@@ -45,8 +48,8 @@ class AssetStatusChart extends StatelessWidget {
                       Text(
                         'Total Assets',
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
@@ -56,12 +59,14 @@ class AssetStatusChart extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSizes.spacingXl),
-        ...summary.entries.map((e) => _StatusProgressRow(
-              label: e.key,
-              count: e.value,
-              total: total,
-              color: _getStatusColor(e.key),
-            )),
+        ...summary.entries.map(
+          (e) => _StatusProgressRow(
+            label: e.key,
+            count: e.value,
+            total: total,
+            color: _getStatusColor(e.key),
+          ),
+        ),
       ],
     );
   }
@@ -100,7 +105,7 @@ class _StatusProgressRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final percentage = total > 0 ? count / total : 0.0;
-    
+
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSizes.spacingMd),
       child: Column(
@@ -116,9 +121,9 @@ class _StatusProgressRow extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                 ),
               ),
               Text(

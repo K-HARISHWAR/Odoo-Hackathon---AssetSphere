@@ -1,11 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:assetsphere/features/assets/data/repositories/mock_asset_repository.dart';
+import 'package:assetsphere/features/assets/data/repositories/asset_repository_impl.dart';
+import 'package:assetsphere/features/assets/data/datasources/assets_mock_datasource.dart';
 
 void main() {
-  late MockAssetRepository repository;
+  late AssetRepositoryImpl repository;
 
   setUp(() {
-    repository = MockAssetRepository();
+    repository = AssetRepositoryImpl(dataSource: AssetsMockDataSource());
   });
 
   group('Asset Tag Generation', () {
