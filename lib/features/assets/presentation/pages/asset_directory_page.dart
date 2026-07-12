@@ -25,9 +25,9 @@ class _AssetDirectoryPageState extends State<AssetDirectoryPage> {
     final dataSource = AssetsMockDataSource();
     final repository = AssetRepositoryImpl(dataSource: dataSource);
     final useCase = GetAssetsUseCase(repository);
-    
+
     _controller = AssetDirectoryController(getAssets: useCase);
-    
+
     if (widget.initialSearchQuery != null) {
       _controller.setSearchQuery(widget.initialSearchQuery!);
     }
@@ -44,7 +44,7 @@ class _AssetDirectoryPageState extends State<AssetDirectoryPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       backgroundColor: theme.colorScheme.surface.withAlpha(245),
       appBar: AppBar(
@@ -54,22 +54,34 @@ class _AssetDirectoryPageState extends State<AssetDirectoryPage> {
           padding: const EdgeInsets.only(left: 12),
           child: Center(
             child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: Colors.white),
+              icon: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 20,
+                color: Colors.white,
+              ),
               style: IconButton.styleFrom(
                 backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               onPressed: () => Navigator.pop(context),
             ),
           ),
         ),
-        title: const Text('Asset Directory', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Asset Directory',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         surfaceTintColor: Colors.transparent,
         backgroundColor: theme.colorScheme.surface,
         elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Divider(height: 1, color: theme.colorScheme.outlineVariant.withAlpha(100)),
+          child: Divider(
+            height: 1,
+            color: theme.colorScheme.outlineVariant.withAlpha(100),
+          ),
         ),
         actions: [
           IconButton(
@@ -89,7 +101,7 @@ class _AssetDirectoryPageState extends State<AssetDirectoryPage> {
                 if (_controller.isLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                
+
                 if (_controller.assets.isEmpty) {
                   return _buildEmptyState(theme);
                 }
@@ -127,12 +139,16 @@ class _AssetDirectoryPageState extends State<AssetDirectoryPage> {
                 hintText: 'Search by tag, name or serial...',
                 prefixIcon: const Icon(Icons.search_rounded),
                 filled: true,
-                fillColor: theme.colorScheme.surfaceVariant.withAlpha(100),
+                fillColor: theme.colorScheme.surfaceContainerHighest.withAlpha(
+                  100,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: AppSizes.spacingMd),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: AppSizes.spacingMd,
+                ),
               ),
               onChanged: _controller.setSearchQuery,
             ),
@@ -142,17 +158,23 @@ class _AssetDirectoryPageState extends State<AssetDirectoryPage> {
             child: DropdownButtonFormField<AssetStatus>(
               decoration: InputDecoration(
                 filled: true,
-                fillColor: theme.colorScheme.surfaceVariant.withAlpha(100),
+                fillColor: theme.colorScheme.surfaceContainerHighest.withAlpha(
+                  100,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: AppSizes.spacingMd),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: AppSizes.spacingMd,
+                ),
               ),
               hint: const Text('Status'),
               items: [
                 const DropdownMenuItem(value: null, child: Text('All Status')),
-                ...AssetStatus.values.map((s) => DropdownMenuItem(value: s, child: Text(s.displayName))),
+                ...AssetStatus.values.map(
+                  (s) => DropdownMenuItem(value: s, child: Text(s.displayName)),
+                ),
               ],
               onChanged: _controller.setStatusFilter,
             ),
@@ -167,11 +189,18 @@ class _AssetDirectoryPageState extends State<AssetDirectoryPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.inventory_2_outlined, size: 80, color: theme.colorScheme.outlineVariant),
+          Icon(
+            Icons.inventory_2_outlined,
+            size: 80,
+            color: theme.colorScheme.outlineVariant,
+          ),
           const SizedBox(height: AppSizes.spacingMd),
           Text('No assets found', style: theme.textTheme.titleLarge),
           const SizedBox(height: 8),
-          Text('Try adjusting your search or filters', style: theme.textTheme.bodyMedium),
+          Text(
+            'Try adjusting your search or filters',
+            style: theme.textTheme.bodyMedium,
+          ),
         ],
       ),
     );
@@ -189,32 +218,79 @@ class _AssetDirectoryPageState extends State<AssetDirectoryPage> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(AppSizes.radiusLg),
           child: DataTable(
-            headingRowColor: MaterialStateProperty.all(theme.colorScheme.surfaceVariant.withAlpha(50)),
+            headingRowColor: WidgetStateProperty.all(
+              theme.colorScheme.surfaceContainerHighest.withAlpha(50),
+            ),
             showCheckboxColumn: false,
             columns: const [
-              DataColumn(label: Text('ASSET TAG', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
-              DataColumn(label: Text('ASSET NAME', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
-              DataColumn(label: Text('CATEGORY', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
-              DataColumn(label: Text('DEPARTMENT', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
-              DataColumn(label: Text('STATUS', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
-              DataColumn(label: Text('ACTIONS', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
-            ],
-            rows: _controller.assets.map((asset) => DataRow(
-              onSelectChanged: (_) => _navigateToDetails(asset),
-              cells: [
-                DataCell(Text(asset.assetTag, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue))),
-                DataCell(Text(asset.name)),
-                DataCell(Text(asset.category)),
-                DataCell(Text(asset.department)),
-                DataCell(_StatusBadge(status: asset.status)),
-                DataCell(
-                  IconButton(
-                    icon: const Icon(Icons.arrow_forward_rounded, size: 20),
-                    onPressed: () => _navigateToDetails(asset),
-                  ),
+              DataColumn(
+                label: Text(
+                  'ASSET TAG',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                 ),
-              ],
-            )).toList(),
+              ),
+              DataColumn(
+                label: Text(
+                  'ASSET NAME',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  'CATEGORY',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  'DEPARTMENT',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  'STATUS',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  'ACTIONS',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+              ),
+            ],
+            rows: _controller.assets
+                .map(
+                  (asset) => DataRow(
+                    onSelectChanged: (_) => _navigateToDetails(asset),
+                    cells: [
+                      DataCell(
+                        Text(
+                          asset.assetTag,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                      DataCell(Text(asset.name)),
+                      DataCell(Text(asset.category)),
+                      DataCell(Text(asset.department)),
+                      DataCell(_StatusBadge(status: asset.status)),
+                      DataCell(
+                        IconButton(
+                          icon: const Icon(
+                            Icons.arrow_forward_rounded,
+                            size: 20,
+                          ),
+                          onPressed: () => _navigateToDetails(asset),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                .toList(),
           ),
         ),
       ),
@@ -255,7 +331,9 @@ class _AssetDirectoryPageState extends State<AssetDirectoryPage> {
   void _navigateToDetails(Asset asset) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AssetDetailsPage(assetId: asset.id)),
+      MaterialPageRoute(
+        builder: (context) => AssetDetailsPage(assetId: asset.id),
+      ),
     );
   }
 }
@@ -269,7 +347,7 @@ class _AssetModernCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -294,14 +372,21 @@ class _AssetModernCard extends StatelessWidget {
                       child: Material(
                         color: Colors.transparent,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.blue.withAlpha(20),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
                             asset.assetTag,
-                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 11),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                              fontSize: 11,
+                            ),
                           ),
                         ),
                       ),
@@ -314,16 +399,26 @@ class _AssetModernCard extends StatelessWidget {
                   asset.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(Icons.category_outlined, size: 14, color: theme.colorScheme.onSurfaceVariant),
+                    Icon(
+                      Icons.category_outlined,
+                      size: 14,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                     const SizedBox(width: 4),
                     Text(asset.category, style: theme.textTheme.bodySmall),
                     const SizedBox(width: 12),
-                    Icon(Icons.business_outlined, size: 14, color: theme.colorScheme.onSurfaceVariant),
+                    Icon(
+                      Icons.business_outlined,
+                      size: 14,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                     const SizedBox(width: 4),
                     Text(asset.department, style: theme.textTheme.bodySmall),
                   ],
@@ -355,12 +450,19 @@ class _StatusBadge extends StatelessWidget {
           Container(
             width: 6,
             height: 6,
-            decoration: BoxDecoration(color: _getColor(), shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: _getColor(),
+              shape: BoxShape.circle,
+            ),
           ),
           const SizedBox(width: 6),
           Text(
             status.displayName,
-            style: TextStyle(color: _getColor(), fontSize: 11, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: _getColor(),
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -369,11 +471,16 @@ class _StatusBadge extends StatelessWidget {
 
   Color _getColor() {
     switch (status) {
-      case AssetStatus.available: return Colors.green;
-      case AssetStatus.allocated: return Colors.blue;
-      case AssetStatus.maintenance: return Colors.orange;
-      case AssetStatus.lost: return Colors.red;
-      default: return Colors.grey;
+      case AssetStatus.available:
+        return Colors.green;
+      case AssetStatus.allocated:
+        return Colors.blue;
+      case AssetStatus.maintenance:
+        return Colors.orange;
+      case AssetStatus.lost:
+        return Colors.red;
+      default:
+        return Colors.grey;
     }
   }
 }
