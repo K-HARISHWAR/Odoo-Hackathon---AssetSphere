@@ -13,7 +13,6 @@ class AppTheme {
         surface: AppColors.surface,
         surfaceContainer: AppColors.surfaceContainer,
         error: AppColors.error,
-
       ),
       scaffoldBackgroundColor: AppColors.background,
       appBarTheme: const AppBarTheme(
@@ -97,16 +96,12 @@ class AppTheme {
           color: AppColors.primary,
           fontWeight: FontWeight.bold,
         ),
-        unselectedLabelTextStyle: TextStyle(
-          color: AppColors.textSecondary,
-        ),
+        unselectedLabelTextStyle: TextStyle(color: AppColors.textSecondary),
         indicatorColor: AppColors.primaryLight,
       ),
       drawerTheme: const DrawerThemeData(
         backgroundColor: AppColors.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       ),
       textTheme: const TextTheme(
         headlineLarge: TextStyle(
@@ -129,22 +124,10 @@ class AppTheme {
           fontWeight: FontWeight.w600,
           fontSize: 16,
         ),
-        bodyLarge: TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 16,
-        ),
-        bodyMedium: TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 14,
-        ),
-        bodySmall: TextStyle(
-          color: AppColors.textSecondary,
-          fontSize: 12,
-        ),
-        labelLarge: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-        ),
+        bodyLarge: TextStyle(color: AppColors.textPrimary, fontSize: 16),
+        bodyMedium: TextStyle(color: AppColors.textPrimary, fontSize: 14),
+        bodySmall: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+        labelLarge: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
       ),
     );
   }

@@ -30,6 +30,11 @@ class MockAuthRepo implements AuthRepository {
   Future<void> logout() async {}
 
   @override
+  Future<AuthenticatedUser?> restoreSession() async {
+    return null;
+  }
+
+  @override
   Future<void> requestPasswordReset({required String email}) async {
     resetCalled = true;
   }

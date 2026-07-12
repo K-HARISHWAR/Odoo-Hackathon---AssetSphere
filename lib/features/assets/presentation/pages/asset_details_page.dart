@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/widgets/app_status_chip.dart';
-
-import '../../data/repositories/asset_repository_impl.dart';
+import '../../domain/entities/asset.dart';
+import '../../domain/entities/asset_condition.dart';
 import '../../domain/repositories/asset_repository.dart';
-import '../../data/datasources/assets_mock_datasource.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../data/repositories/supabase_asset_repository_impl.dart';
 import '../controllers/asset_details_controller.dart';
 
 class AssetDetailsPage extends StatefulWidget {
@@ -13,7 +14,7 @@ class AssetDetailsPage extends StatefulWidget {
   final VoidCallback? onBack;
 
   const AssetDetailsPage({
-    super.key, 
+    super.key,
     required this.assetId,
     this.repository,
     this.onBack,
@@ -29,11 +30,11 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
   @override
   void initState() {
     super.initState();
-    
-    final repo = widget.repository ?? AssetRepositoryImpl(
-      dataSource: AssetsMockDataSource(),
-    );
-    
+
+    final repo =
+        widget.repository ??
+        SupabaseAssetRepositoryImpl(supabaseClient: Supabase.instance.client);
+
     _controller = AssetDetailsController(repository: repo);
     _controller.loadAssetDetails(widget.assetId);
   }
@@ -131,7 +132,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
     );
   }
 
-  Widget _buildTopBanner(ThemeData theme, dynamic asset) {
+  Widget _buildTopBanner(ThemeData theme, Asset asset) {
     return Container(
       padding: const EdgeInsets.all(AppSizes.spacingLg),
       decoration: BoxDecoration(
@@ -212,7 +213,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
     );
   }
 
-  Widget _buildInfoGrid(ThemeData theme, dynamic asset) {
+  Widget _buildInfoGrid(ThemeData theme, Asset asset) {
     return Column(
       children: [
         _buildInfoCard(
@@ -347,7 +348,6 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
     );
   }
 }
-
 
 class _TimelineItem extends StatelessWidget {
   final String title;

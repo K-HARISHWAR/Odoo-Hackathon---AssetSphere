@@ -17,8 +17,10 @@ class AppResponsiveGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final crossAxisCount = (constraints.maxWidth / minItemWidth).floor().clamp(1, 4);
-        
+        final crossAxisCount = (constraints.maxWidth / minItemWidth)
+            .floor()
+            .clamp(1, 4);
+
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -26,7 +28,8 @@ class AppResponsiveGrid extends StatelessWidget {
             crossAxisCount: crossAxisCount,
             crossAxisSpacing: spacing,
             mainAxisSpacing: spacing,
-            childAspectRatio: 1, // Will be overridden if you use Wrap or other layouts, but GridView requires it or extent.
+            childAspectRatio:
+                1, // Will be overridden if you use Wrap or other layouts, but GridView requires it or extent.
             // Actually, for arbitrary height items, Wrap is better.
           ),
           itemCount: children.length,
@@ -55,15 +58,15 @@ class AppResponsiveWrap extends StatelessWidget {
       builder: (context, constraints) {
         final availableWidth = constraints.maxWidth;
         final columns = (availableWidth / minItemWidth).floor().clamp(1, 4);
-        final itemWidth = (availableWidth - (spacing * (columns - 1))) / columns;
-        
+        final itemWidth =
+            (availableWidth - (spacing * (columns - 1))) / columns;
+
         return Wrap(
           spacing: spacing,
           runSpacing: spacing,
-          children: children.map((child) => SizedBox(
-            width: itemWidth,
-            child: child,
-          )).toList(),
+          children: children
+              .map((child) => SizedBox(width: itemWidth, child: child))
+              .toList(),
         );
       },
     );

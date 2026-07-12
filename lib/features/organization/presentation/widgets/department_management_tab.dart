@@ -78,9 +78,13 @@ class DepartmentManagementTab extends StatelessWidget {
                           return ListView.builder(
                             itemCount: controller.filteredDepartments.length,
                             itemBuilder: (context, index) {
-                              final dept = controller.filteredDepartments[index];
+                              final dept =
+                                  controller.filteredDepartments[index];
                               return Card(
-                                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
                                 child: ListTile(
                                   title: Text(dept.name),
                                   subtitle: Text('Code: ${dept.code}'),
@@ -99,7 +103,7 @@ class DepartmentManagementTab extends StatelessWidget {
                             },
                           );
                         }
-                        
+
                         // Desktop layout
                         return Card(
                           margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -108,7 +112,10 @@ class DepartmentManagementTab extends StatelessWidget {
                             child: SingleChildScrollView(
                               child: DataTable(
                                 headingRowColor: WidgetStateProperty.all(
-                                  Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHighest
+                                      .withValues(alpha: 0.5),
                                 ),
                                 columns: const [
                                   DataColumn(label: Text('Code')),
@@ -118,42 +125,59 @@ class DepartmentManagementTab extends StatelessWidget {
                                   DataColumn(label: Text('Status')),
                                   DataColumn(label: Text('Actions')),
                                 ],
-                                rows: controller.filteredDepartments.map((dept) {
+                                rows: controller.filteredDepartments.map((
+                                  dept,
+                                ) {
                                   return DataRow(
                                     cells: [
                                       DataCell(Text(dept.code)),
                                       DataCell(Text(dept.name)),
-                                      DataCell(Text(dept.parentDepartmentName ?? '-')),
-                                      DataCell(Text(dept.departmentHeadName ?? '-')),
-                                      DataCell(StatusBadge(status: dept.status)),
+                                      DataCell(
+                                        Text(dept.parentDepartmentName ?? '-'),
+                                      ),
+                                      DataCell(
+                                        Text(dept.departmentHeadName ?? '-'),
+                                      ),
+                                      DataCell(
+                                        StatusBadge(status: dept.status),
+                                      ),
                                       DataCell(
                                         Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             IconButton(
-                                              icon: const Icon(Icons.edit, size: 20),
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                size: 20,
+                                              ),
                                               tooltip: 'Edit',
                                               onPressed: () {
                                                 showDialog(
                                                   context: context,
-                                                  builder: (ctx) => DepartmentFormDialog(
-                                                    controller: controller,
-                                                    department: dept,
-                                                  ),
+                                                  builder: (ctx) =>
+                                                      DepartmentFormDialog(
+                                                        controller: controller,
+                                                        department: dept,
+                                                      ),
                                                 );
                                               },
                                             ),
                                             IconButton(
                                               icon: Icon(
-                                                dept.status == RecordStatus.active
+                                                dept.status ==
+                                                        RecordStatus.active
                                                     ? Icons.block
                                                     : Icons.check_circle,
                                                 size: 20,
-                                                color: dept.status == RecordStatus.active
+                                                color:
+                                                    dept.status ==
+                                                        RecordStatus.active
                                                     ? Colors.red
                                                     : Colors.green,
                                               ),
-                                              tooltip: dept.status == RecordStatus.active
+                                              tooltip:
+                                                  dept.status ==
+                                                      RecordStatus.active
                                                   ? 'Deactivate'
                                                   : 'Activate',
                                               onPressed: () async {
@@ -168,18 +192,33 @@ class DepartmentManagementTab extends StatelessWidget {
                                                     ),
                                                     actions: [
                                                       TextButton(
-                                                        onPressed: () => Navigator.pop(ctx, false),
-                                                        child: const Text('Cancel'),
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                              ctx,
+                                                              false,
+                                                            ),
+                                                        child: const Text(
+                                                          'Cancel',
+                                                        ),
                                                       ),
                                                       ElevatedButton(
-                                                        onPressed: () => Navigator.pop(ctx, true),
-                                                        child: const Text('Confirm'),
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                              ctx,
+                                                              true,
+                                                            ),
+                                                        child: const Text(
+                                                          'Confirm',
+                                                        ),
                                                       ),
                                                     ],
                                                   ),
                                                 );
                                                 if (confirm == true) {
-                                                  controller.toggleDepartmentStatus(dept.id);
+                                                  controller
+                                                      .toggleDepartmentStatus(
+                                                        dept.id,
+                                                      );
                                                 }
                                               },
                                             ),

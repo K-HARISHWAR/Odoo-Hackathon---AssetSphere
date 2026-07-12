@@ -8,7 +8,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
-  const supabasePublishableKey = String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY');
+  const supabasePublishableKey = String.fromEnvironment(
+    'SUPABASE_PUBLISHABLE_KEY',
+  );
 
   if (supabaseUrl.isEmpty || supabasePublishableKey.isEmpty) {
     throw StateError(
@@ -21,11 +23,15 @@ Future<void> main() async {
     publishableKey: supabasePublishableKey,
   );
 
-  final dependencies = AppDependencies.create();
-  final sessionController = AppSessionController();
-  
-  runApp(AssetSphereApp(
-    dependencies: dependencies,
-    sessionController: sessionController,
-  ));
+  final dependencies = AppDependencies.production(Supabase.instance.client);
+  final sessionController = AppSessionController(
+    authRepository: dependencies.authController.repository,
+  );
+
+  runApp(
+    AssetSphereApp(
+      dependencies: dependencies,
+      sessionController: sessionController,
+    ),
+  );
 }

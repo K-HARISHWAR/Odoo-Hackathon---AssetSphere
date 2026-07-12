@@ -4,8 +4,9 @@ import '../../../../core/widgets/app_page_header.dart';
 import '../../../../core/widgets/app_status_chip.dart';
 import '../../domain/entities/asset.dart';
 import '../../domain/entities/asset_status.dart';
-import '../../data/datasources/assets_mock_datasource.dart';
-import '../../data/repositories/asset_repository_impl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../data/repositories/supabase_asset_repository_impl.dart';
+
 import '../../domain/usecases/get_assets_usecase.dart';
 import '../controllers/asset_directory_controller.dart';
 import 'asset_details_page.dart';
@@ -13,9 +14,9 @@ import 'asset_details_page.dart';
 class AssetDirectoryPage extends StatefulWidget {
   final String? initialSearchQuery;
   final AssetDirectoryController? controller;
-  
+
   const AssetDirectoryPage({
-    super.key, 
+    super.key,
     this.initialSearchQuery,
     this.controller,
   });
@@ -35,8 +36,9 @@ class _AssetDirectoryPageState extends State<AssetDirectoryPage> {
       _controller = widget.controller!;
     } else {
       _ownsController = true;
-      final dataSource = AssetsMockDataSource();
-      final repository = AssetRepositoryImpl(dataSource: dataSource);
+      final repository = SupabaseAssetRepositoryImpl(
+        supabaseClient: Supabase.instance.client,
+      );
       final useCase = GetAssetsUseCase(repository);
       _controller = AssetDirectoryController(getAssets: useCase);
     }

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:assetsphere/features/authentication/domain/entities/authenticated_user.dart';
 import 'package:assetsphere/features/authentication/data/models/authenticated_user_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Note: These plain-text mock passwords are for local development only
 // and must not be used in production.
@@ -50,6 +51,15 @@ class MockAuthDataSource {
     await Future.delayed(Duration(milliseconds: delay));
   }
 
+  Future<void> logout() async {
+    // Simulated delay
+    await Future.delayed(const Duration(milliseconds: 500));
+  }
+
+  Future<AuthenticatedUser?> restoreSession() async {
+    return null;
+  }
+
   Future<AuthenticatedUserModel> login({
     required String email,
     required String password,
@@ -75,6 +85,25 @@ class MockAuthDataSource {
       throw Exception(
         'Account is inactive. Please contact your administrator.',
       );
+    }
+
+    try {
+      // Attempt to sign in to Supabase so that repositories depending on auth work.
+      await Supabase.instance.client.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+    } catch (e) {
+      try {
+        // If login fails, try signing them up automatically.
+        await Supabase.instance.client.auth.signUp(
+          email: email,
+          password: password,
+          data: {'full_name': userMap['fullName']},
+        );
+      } catch (_) {
+        // Ignore errors, maybe they are already signed up but invalid password in mock.
+      }
     }
 
     return AuthenticatedUserModel(

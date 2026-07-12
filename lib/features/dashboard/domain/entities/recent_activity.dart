@@ -16,6 +16,7 @@ extension ActivityTypeX on ActivityType {
     }
   }
 }
+
 class RecentActivity {
   final String id;
   final String title;

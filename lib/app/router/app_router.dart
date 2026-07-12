@@ -21,10 +21,7 @@ class AppRouter {
   final AppDependencies dependencies;
   final AppSessionController sessionController;
 
-  AppRouter({
-    required this.dependencies,
-    required this.sessionController,
-  });
+  AppRouter({required this.dependencies, required this.sessionController});
 
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
     // Unauthenticated routes
@@ -40,7 +37,7 @@ class AppRouter {
           ),
         );
       }
-      
+
       if (settings.name == AppRoutes.forgotPassword) {
         return MaterialPageRoute(
           builder: (context) => ForgotPasswordPage(
@@ -58,7 +55,8 @@ class AppRouter {
         builder: (context) => LoginPage(
           controller: dependencies.authController,
           onCreateAccount: () => Navigator.pushNamed(context, AppRoutes.signup),
-          onForgotPassword: () => Navigator.pushNamed(context, AppRoutes.forgotPassword),
+          onForgotPassword: () =>
+              Navigator.pushNamed(context, AppRoutes.forgotPassword),
           onLoginSuccess: (user) {
             sessionController.authenticate(user);
             Navigator.pushNamedAndRemoveUntil(
@@ -87,8 +85,10 @@ class AppRouter {
           child: Builder(
             builder: (ctx) => HomePage(
               controller: dependencies.dashboardController,
-              onRegisterAsset: () => Navigator.pushNamed(ctx, AppRoutes.registerAsset),
-              onViewDirectory: () => Navigator.pushReplacementNamed(ctx, AppRoutes.assets),
+              onRegisterAsset: () =>
+                  Navigator.pushNamed(ctx, AppRoutes.registerAsset),
+              onViewDirectory: () =>
+                  Navigator.pushReplacementNamed(ctx, AppRoutes.assets),
               onBookResource: () {},
               onMaintenanceRequest: () {},
               onSearch: (query) {
@@ -119,7 +119,7 @@ class AppRouter {
           return MaterialPageRoute(builder: (_) => const UnauthorizedPage());
         }
         sessionController.selectSection('assets');
-        
+
         final initialQuery = settings.arguments as String?;
         return _buildShellRoute(
           child: Builder(
@@ -148,7 +148,7 @@ class AppRouter {
         }
         final assetId = settings.arguments as String?;
         if (assetId == null) return _errorRoute();
-        
+
         return MaterialPageRoute(
           builder: (context) => AssetDetailsPage(
             assetId: assetId,

@@ -14,6 +14,7 @@ extension AuthRoleX on AuthRole {
     }
   }
 }
+
 class AuthenticatedUser {
   final String id;
   final String fullName;

@@ -24,6 +24,8 @@ class AuthController extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  AuthRepository get repository => _repository;
+
   AuthenticatedUser? _currentUser;
   AuthenticatedUser? get currentUser => _currentUser;
 

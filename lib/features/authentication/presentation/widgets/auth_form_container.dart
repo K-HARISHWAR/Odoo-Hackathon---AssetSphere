@@ -23,7 +23,9 @@ class AuthFormContainer extends StatelessWidget {
               width: cardWidth,
               child: isMobile
                   ? Padding(
-                      padding: const EdgeInsets.symmetric(vertical: AppSizes.spacingXl),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSizes.spacingXl,
+                      ),
                       child: child,
                     )
                   : Card(

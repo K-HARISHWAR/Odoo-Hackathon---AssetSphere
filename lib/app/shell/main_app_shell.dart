@@ -25,8 +25,14 @@ class MainAppShell extends StatefulWidget {
 class _MainAppShellState extends State<MainAppShell> {
   int _getSelectedIndex(String section, AuthRole? role) {
     if (section == 'dashboard') return 0;
-    if (section == 'assets' && role != null && AppPermissions.canAccessAssets(role)) return 1;
-    if (section == 'organization' && role != null && AppPermissions.canAccessOrganizationSetup(role)) {
+    if (section == 'assets' &&
+        role != null &&
+        AppPermissions.canAccessAssets(role)) {
+      return 1;
+    }
+    if (section == 'organization' &&
+        role != null &&
+        AppPermissions.canAccessOrganizationSetup(role)) {
       return AppPermissions.canAccessAssets(role) ? 2 : 1;
     }
     return 0;
@@ -38,7 +44,8 @@ class _MainAppShellState extends State<MainAppShell> {
     } else if (index == 1) {
       if (role != null && AppPermissions.canAccessAssets(role)) {
         Navigator.pushReplacementNamed(context, AppRoutes.assets);
-      } else if (role != null && AppPermissions.canAccessOrganizationSetup(role)) {
+      } else if (role != null &&
+          AppPermissions.canAccessOrganizationSetup(role)) {
         Navigator.pushReplacementNamed(context, AppRoutes.organization);
       }
     } else if (index == 2) {
@@ -51,18 +58,14 @@ class _MainAppShellState extends State<MainAppShell> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isDesktop = constraints.maxWidth > 900;
-        
+
         return Scaffold(
           appBar: isDesktop ? null : _buildMobileAppBar(context),
           drawer: isDesktop ? null : _buildDrawer(context),
           body: Row(
             children: [
               if (isDesktop) _buildDesktopNav(context, constraints.maxWidth),
-              Expanded(
-                child: ClipRect(
-                  child: widget.child,
-                ),
-              ),
+              Expanded(child: ClipRect(child: widget.child)),
             ],
           ),
         );
@@ -72,7 +75,10 @@ class _MainAppShellState extends State<MainAppShell> {
 
   PreferredSizeWidget _buildMobileAppBar(BuildContext context) {
     return AppBar(
-      title: const Text('AssetSphere', style: TextStyle(fontWeight: FontWeight.bold)),
+      title: const Text(
+        'AssetSphere',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
       elevation: 0,
     );
   }
@@ -85,7 +91,7 @@ class _MainAppShellState extends State<MainAppShell> {
           final user = widget.sessionController.currentUser;
           final role = user?.role;
           final currentSection = widget.sessionController.currentSection;
-          
+
           return Column(
             children: [
               UserAccountsDrawerHeader(
@@ -112,7 +118,10 @@ class _MainAppShellState extends State<MainAppShell> {
                       isSelected: currentSection == 'dashboard',
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
+                        Navigator.pushReplacementNamed(
+                          context,
+                          AppRoutes.dashboard,
+                        );
                       },
                     ),
                     if (role != null && AppPermissions.canAccessAssets(role))
@@ -122,17 +131,24 @@ class _MainAppShellState extends State<MainAppShell> {
                         isSelected: currentSection == 'assets',
                         onTap: () {
                           Navigator.pop(context);
-                          Navigator.pushReplacementNamed(context, AppRoutes.assets);
+                          Navigator.pushReplacementNamed(
+                            context,
+                            AppRoutes.assets,
+                          );
                         },
                       ),
-                    if (role != null && AppPermissions.canAccessOrganizationSetup(role))
+                    if (role != null &&
+                        AppPermissions.canAccessOrganizationSetup(role))
                       _DrawerNavItem(
                         icon: Icons.business_rounded,
                         label: 'Organization Setup',
                         isSelected: currentSection == 'organization',
                         onTap: () {
                           Navigator.pop(context);
-                          Navigator.pushReplacementNamed(context, AppRoutes.organization);
+                          Navigator.pushReplacementNamed(
+                            context,
+                            AppRoutes.organization,
+                          );
                         },
                       ),
                   ],
@@ -140,8 +156,14 @@ class _MainAppShellState extends State<MainAppShell> {
               ),
               const Divider(),
               ListTile(
-                leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
-                title: Text('Logout', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                leading: Icon(
+                  Icons.logout,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                title: Text(
+                  'Logout',
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
                 onTap: _handleLogout,
               ),
               const SizedBox(height: AppSizes.spacingLg),
@@ -195,14 +217,18 @@ class _MainAppShellState extends State<MainAppShell> {
           decoration: BoxDecoration(
             border: Border(
               right: BorderSide(
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
               ),
             ),
           ),
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: AppSizes.spacingLg),
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppSizes.spacingLg,
+                ),
                 child: Icon(
                   Icons.blur_on,
                   color: Theme.of(context).colorScheme.primary,
@@ -213,16 +239,22 @@ class _MainAppShellState extends State<MainAppShell> {
                 child: NavigationRail(
                   extended: isExtended,
                   selectedIndex: selectedIndex,
-                  onDestinationSelected: (index) => _onDestinationSelected(index, role),
+                  onDestinationSelected: (index) =>
+                      _onDestinationSelected(index, role),
                   destinations: destinations,
-                  labelType: isExtended ? NavigationRailLabelType.none : NavigationRailLabelType.all,
+                  labelType: isExtended
+                      ? NavigationRailLabelType.none
+                      : NavigationRailLabelType.all,
                   leading: const SizedBox(height: AppSizes.spacingMd),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSizes.spacingLg),
                 child: IconButton(
-                  icon: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
+                  icon: Icon(
+                    Icons.logout,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                   tooltip: 'Logout',
                   onPressed: _handleLogout,
                 ),
@@ -262,7 +294,7 @@ class _DrawerNavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSizes.spacingMd,
@@ -273,16 +305,22 @@ class _DrawerNavItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppSizes.radiusMd),
         ),
         selected: isSelected,
-        selectedTileColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.2),
+        selectedTileColor: theme.colorScheme.primaryContainer.withValues(
+          alpha: 0.2,
+        ),
         leading: Icon(
           icon,
-          color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+          color: isSelected
+              ? theme.colorScheme.primary
+              : theme.colorScheme.onSurfaceVariant,
         ),
         title: Text(
           label,
           style: TextStyle(
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface,
+            color: isSelected
+                ? theme.colorScheme.primary
+                : theme.colorScheme.onSurface,
           ),
         ),
         onTap: onTap,

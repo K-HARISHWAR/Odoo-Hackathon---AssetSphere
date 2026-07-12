@@ -4,15 +4,12 @@ import '../constants/app_sizes.dart';
 class AppLoadingState extends StatelessWidget {
   final String? message;
 
-  const AppLoadingState({
-    super.key,
-    this.message,
-  });
+  const AppLoadingState({super.key, this.message});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.spacingXl),

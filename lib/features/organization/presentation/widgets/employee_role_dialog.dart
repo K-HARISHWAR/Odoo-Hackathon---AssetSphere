@@ -51,7 +51,10 @@ class _EmployeeRoleDialogState extends State<EmployeeRoleDialog> {
                 border: OutlineInputBorder(),
               ),
               items: EmployeeRole.values.map((role) {
-                return DropdownMenuItem(value: role, child: Text(role.displayName));
+                return DropdownMenuItem(
+                  value: role,
+                  child: Text(role.displayName),
+                );
               }).toList(),
               onChanged: (val) {
                 if (val != null) setState(() => _selectedRole = val);

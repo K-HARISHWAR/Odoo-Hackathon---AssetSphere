@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_sizes.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../domain/entities/asset_condition.dart';
-import '../../data/datasources/assets_mock_datasource.dart';
-import '../../data/repositories/asset_repository_impl.dart';
+import '../../data/repositories/supabase_asset_repository_impl.dart';
+
 import '../../domain/repositories/asset_repository.dart';
 import '../../domain/usecases/add_asset_usecase.dart';
 import '../controllers/asset_registration_controller.dart';
@@ -13,7 +14,7 @@ class RegisterAssetPage extends StatefulWidget {
   final VoidCallback? onCancel;
 
   const RegisterAssetPage({
-    super.key, 
+    super.key,
     this.repository,
     this.onSuccess,
     this.onCancel,
@@ -88,11 +89,11 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
   @override
   void initState() {
     super.initState();
-    
-    final repo = widget.repository ?? AssetRepositoryImpl(
-      dataSource: AssetsMockDataSource(),
-    );
-    
+
+    final repo =
+        widget.repository ??
+        SupabaseAssetRepositoryImpl(supabaseClient: Supabase.instance.client);
+
     _controller = AssetRegistrationController(
       repository: repo,
       addAsset: AddAssetUseCase(repo),

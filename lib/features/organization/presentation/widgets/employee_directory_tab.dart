@@ -96,10 +96,15 @@ class EmployeeDirectoryTab extends StatelessWidget {
                             itemBuilder: (context, index) {
                               final emp = controller.filteredEmployees[index];
                               return Card(
-                                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
                                 child: ListTile(
                                   title: Text(emp.fullName),
-                                  subtitle: Text('${emp.role.displayName} • ${emp.departmentName}'),
+                                  subtitle: Text(
+                                    '${emp.role.displayName} • ${emp.departmentName}',
+                                  ),
                                   trailing: StatusBadge(status: emp.status),
                                   onTap: () {
                                     showDialog(
@@ -124,7 +129,10 @@ class EmployeeDirectoryTab extends StatelessWidget {
                             child: SingleChildScrollView(
                               child: DataTable(
                                 headingRowColor: WidgetStateProperty.all(
-                                  Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHighest
+                                      .withValues(alpha: 0.5),
                                 ),
                                 columns: const [
                                   DataColumn(label: Text('Code')),
@@ -136,7 +144,8 @@ class EmployeeDirectoryTab extends StatelessWidget {
                                   DataColumn(label: Text('Actions')),
                                 ],
                                 rows: controller.filteredEmployees.map((emp) {
-                                  final isInactive = emp.status == RecordStatus.inactive;
+                                  final isInactive =
+                                      emp.status == RecordStatus.inactive;
                                   return DataRow(
                                     color: isInactive
                                         ? WidgetStateProperty.all(
@@ -148,7 +157,9 @@ class EmployeeDirectoryTab extends StatelessWidget {
                                         Text(
                                           emp.employeeCode,
                                           style: TextStyle(
-                                            color: isInactive ? Colors.grey : null,
+                                            color: isInactive
+                                                ? Colors.grey
+                                                : null,
                                           ),
                                         ),
                                       ),
@@ -156,7 +167,9 @@ class EmployeeDirectoryTab extends StatelessWidget {
                                         Text(
                                           emp.fullName,
                                           style: TextStyle(
-                                            color: isInactive ? Colors.grey : null,
+                                            color: isInactive
+                                                ? Colors.grey
+                                                : null,
                                           ),
                                         ),
                                       ),
@@ -164,7 +177,9 @@ class EmployeeDirectoryTab extends StatelessWidget {
                                         Text(
                                           emp.email,
                                           style: TextStyle(
-                                            color: isInactive ? Colors.grey : null,
+                                            color: isInactive
+                                                ? Colors.grey
+                                                : null,
                                           ),
                                         ),
                                       ),
@@ -172,7 +187,9 @@ class EmployeeDirectoryTab extends StatelessWidget {
                                         Text(
                                           emp.departmentName,
                                           style: TextStyle(
-                                            color: isInactive ? Colors.grey : null,
+                                            color: isInactive
+                                                ? Colors.grey
+                                                : null,
                                           ),
                                         ),
                                       ),
@@ -180,7 +197,9 @@ class EmployeeDirectoryTab extends StatelessWidget {
                                         Text(
                                           emp.role.displayName,
                                           style: TextStyle(
-                                            color: isInactive ? Colors.grey : null,
+                                            color: isInactive
+                                                ? Colors.grey
+                                                : null,
                                           ),
                                         ),
                                       ),
@@ -190,42 +209,55 @@ class EmployeeDirectoryTab extends StatelessWidget {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             IconButton(
-                                              icon: const Icon(Icons.business, size: 20),
+                                              icon: const Icon(
+                                                Icons.business,
+                                                size: 20,
+                                              ),
                                               tooltip: 'Change Department',
                                               onPressed: () {
                                                 showDialog(
                                                   context: context,
-                                                  builder: (ctx) => EmployeeDepartmentDialog(
-                                                    controller: controller,
-                                                    employee: emp,
-                                                  ),
+                                                  builder: (ctx) =>
+                                                      EmployeeDepartmentDialog(
+                                                        controller: controller,
+                                                        employee: emp,
+                                                      ),
                                                 );
                                               },
                                             ),
                                             IconButton(
-                                              icon: const Icon(Icons.admin_panel_settings, size: 20),
+                                              icon: const Icon(
+                                                Icons.admin_panel_settings,
+                                                size: 20,
+                                              ),
                                               tooltip: 'Change Role',
                                               onPressed: () {
                                                 showDialog(
                                                   context: context,
-                                                  builder: (ctx) => EmployeeRoleDialog(
-                                                    controller: controller,
-                                                    employee: emp,
-                                                  ),
+                                                  builder: (ctx) =>
+                                                      EmployeeRoleDialog(
+                                                        controller: controller,
+                                                        employee: emp,
+                                                      ),
                                                 );
                                               },
                                             ),
                                             IconButton(
                                               icon: Icon(
-                                                emp.status == RecordStatus.active
+                                                emp.status ==
+                                                        RecordStatus.active
                                                     ? Icons.block
                                                     : Icons.check_circle,
                                                 size: 20,
-                                                color: emp.status == RecordStatus.active
+                                                color:
+                                                    emp.status ==
+                                                        RecordStatus.active
                                                     ? Colors.red
                                                     : Colors.green,
                                               ),
-                                              tooltip: emp.status == RecordStatus.active
+                                              tooltip:
+                                                  emp.status ==
+                                                      RecordStatus.active
                                                   ? 'Deactivate'
                                                   : 'Activate',
                                               onPressed: () async {
@@ -240,23 +272,41 @@ class EmployeeDirectoryTab extends StatelessWidget {
                                                     ),
                                                     actions: [
                                                       TextButton(
-                                                        onPressed: () => Navigator.pop(ctx, false),
-                                                        child: const Text('Cancel'),
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                              ctx,
+                                                              false,
+                                                            ),
+                                                        child: const Text(
+                                                          'Cancel',
+                                                        ),
                                                       ),
                                                       ElevatedButton(
-                                                        onPressed: () => Navigator.pop(ctx, true),
-                                                        child: const Text('Confirm'),
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                              ctx,
+                                                              true,
+                                                            ),
+                                                        child: const Text(
+                                                          'Confirm',
+                                                        ),
                                                       ),
                                                     ],
                                                   ),
                                                 );
                                                 if (confirm == true) {
-                                                  controller.updateEmployeeStatus(
-                                                    id: emp.id,
-                                                    status: emp.status == RecordStatus.active
-                                                        ? RecordStatus.inactive
-                                                        : RecordStatus.active,
-                                                  );
+                                                  controller
+                                                      .updateEmployeeStatus(
+                                                        id: emp.id,
+                                                        status:
+                                                            emp.status ==
+                                                                RecordStatus
+                                                                    .active
+                                                            ? RecordStatus
+                                                                  .inactive
+                                                            : RecordStatus
+                                                                  .active,
+                                                      );
                                                 }
                                               },
                                             ),

@@ -150,6 +150,34 @@ create policy "everyone_read_departments" on public.departments
 for select to authenticated
 using (organization_id = private.current_organization_id());
 
+-- Locations
+drop policy if exists "admin_manage_locations" on public.locations;
+create policy "admin_manage_locations" on public.locations
+for all to authenticated
+using (
+    organization_id = private.current_organization_id() 
+    and private.has_role('admin')
+);
+
+drop policy if exists "everyone_read_locations" on public.locations;
+create policy "everyone_read_locations" on public.locations
+for select to authenticated
+using (organization_id = private.current_organization_id());
+
+-- Asset Categories
+drop policy if exists "admin_manage_categories" on public.asset_categories;
+create policy "admin_manage_categories" on public.asset_categories
+for all to authenticated
+using (
+    organization_id = private.current_organization_id() 
+    and private.has_role('admin')
+);
+
+drop policy if exists "everyone_read_categories" on public.asset_categories;
+create policy "everyone_read_categories" on public.asset_categories
+for select to authenticated
+using (organization_id = private.current_organization_id());
+
 -- Auditors
 drop policy if exists "auditor_read_assigned_cycles" on public.audit_cycles;
 create policy "auditor_read_assigned_cycles" on public.audit_cycles

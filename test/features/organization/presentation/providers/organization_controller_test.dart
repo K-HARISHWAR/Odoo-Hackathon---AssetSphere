@@ -37,8 +37,12 @@ class FakeOrgRepo implements OrganizationRepository {
   // Provide other minimum stubs
   @override
   dynamic noSuchMethod(Invocation invocation) {
-    if (invocation.memberName == #getDepartments) return Future<List<Department>>.value([]);
-    if (invocation.memberName == #getAssetCategories) return Future<List<AssetCategory>>.value([]);
+    if (invocation.memberName == #getDepartments) {
+      return Future<List<Department>>.value([]);
+    }
+    if (invocation.memberName == #getAssetCategories) {
+      return Future<List<AssetCategory>>.value([]);
+    }
     return super.noSuchMethod(invocation);
   }
 }

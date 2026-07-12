@@ -29,6 +29,11 @@ class FakeAuthRepo implements AuthRepository {
   Future<void> logout() async {}
 
   @override
+  Future<AuthenticatedUser?> restoreSession() async {
+    return null;
+  }
+
+  @override
   Future<void> requestPasswordReset({required String email}) async {
     if (shouldThrow) throw Exception('Email not found');
   }

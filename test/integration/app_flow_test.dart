@@ -18,14 +18,18 @@ void main() {
 
     tester.view.physicalSize = const Size(1920, 1080);
     tester.view.devicePixelRatio = 1.0;
-    
-    final dependencies = AppDependencies.create();
-    final sessionController = AppSessionController();
 
-    await tester.pumpWidget(AssetSphereApp(
-      dependencies: dependencies,
-      sessionController: sessionController,
-    ));
+    final dependencies = AppDependencies.create();
+    final sessionController = AppSessionController(
+      authRepository: dependencies.authController.repository,
+    );
+
+    await tester.pumpWidget(
+      AssetSphereApp(
+        dependencies: dependencies,
+        sessionController: sessionController,
+      ),
+    );
 
     await tester.pumpAndSettle();
 
@@ -35,19 +39,19 @@ void main() {
     // Enter credentials
     final emailField = find.byType(TextFormField).first;
     final passwordField = find.byType(TextFormField).last;
-    
+
     await tester.enterText(emailField, 'admin@assetsphere.com');
     await tester.enterText(passwordField, 'Admin@123');
-    
+
     // Tap Login button
     final loginButton = find.widgetWithText(ElevatedButton, 'Login');
     await tester.tap(loginButton);
-    
+
     await tester.pumpAndSettle();
 
     // Verify we are on the Dashboard page now
     expect(find.byType(HomePage), findsOneWidget);
-    
+
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
   });

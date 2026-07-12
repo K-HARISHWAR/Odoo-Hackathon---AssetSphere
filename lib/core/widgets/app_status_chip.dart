@@ -8,11 +8,7 @@ class AppStatusChip extends StatelessWidget {
   final String label;
   final Color color;
 
-  const AppStatusChip({
-    super.key,
-    required this.label,
-    required this.color,
-  });
+  const AppStatusChip({super.key, required this.label, required this.color});
 
   factory AppStatusChip.fromAssetStatus(AssetStatus status) {
     Color color;
@@ -46,7 +42,6 @@ class AppStatusChip extends StatelessWidget {
     Color color;
     switch (condition) {
       case AssetCondition.newCondition:
-      case AssetCondition.excellent:
         color = AppColors.success;
         break;
       case AssetCondition.good:
@@ -56,6 +51,7 @@ class AppStatusChip extends StatelessWidget {
         color = AppColors.warning;
         break;
       case AssetCondition.damaged:
+      case AssetCondition.unusable:
         color = AppColors.error;
         break;
     }

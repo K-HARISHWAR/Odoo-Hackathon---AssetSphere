@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
   final Function(String)? onSearch;
 
   final DashboardController? controller;
-  
+
   const HomePage({
     super.key,
     this.controller,
@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
 
       _controller = DashboardController(getDashboardData: useCase);
     }
-    
+
     // Only load if not already loaded to prevent overriding shared state
     if (_controller.kpis.isEmpty && !_controller.isLoading) {
       _controller.loadDashboardData();
@@ -138,10 +138,7 @@ class _HomePageState extends State<HomePage> {
                 icon: const Icon(Icons.notifications_outlined),
               ),
               const SizedBox(width: AppSizes.spacingMd),
-              const CircleAvatar(
-                radius: 20,
-                child: Icon(Icons.person),
-              ),
+              const CircleAvatar(radius: 20, child: Icon(Icons.person)),
             ],
           ],
         );
@@ -157,7 +154,11 @@ class _HomePageState extends State<HomePage> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5)),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
       ),
       child: TextField(
         onSubmitted: (value) => widget.onSearch?.call(value),

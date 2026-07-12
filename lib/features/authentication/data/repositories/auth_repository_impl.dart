@@ -42,4 +42,9 @@ class AuthRepositoryImpl implements AuthRepository {
     // In a real implementation this might clear secure storage and tokens
     await Future.delayed(const Duration(milliseconds: 300));
   }
+
+  @override
+  Future<AuthenticatedUser?> restoreSession() async {
+    return null;
+  }
 }
