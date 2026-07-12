@@ -45,7 +45,8 @@ class _EmployeeDepartmentDialogState extends State<EmployeeDepartmentDialog> {
             Text('Current department: ${widget.employee.departmentName}'),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: activeDepartments.any((d) => d.id == _selectedDepartmentId)
+              initialValue:
+                  activeDepartments.any((d) => d.id == _selectedDepartmentId)
                   ? _selectedDepartmentId
                   : null,
               decoration: const InputDecoration(
@@ -80,7 +81,7 @@ class _EmployeeDepartmentDialogState extends State<EmployeeDepartmentDialog> {
                         id: widget.employee.id,
                         newDepartmentId: _selectedDepartmentId!,
                       );
-                  if (success && mounted) {
+                  if (success && context.mounted) {
                     Navigator.pop(context);
                   }
                 },

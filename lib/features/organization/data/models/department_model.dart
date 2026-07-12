@@ -1,5 +1,4 @@
 import 'package:assetsphere/features/organization/domain/entities/department.dart';
-import 'package:assetsphere/features/organization/domain/entities/record_status.dart';
 
 class DepartmentModel extends Department {
   const DepartmentModel({

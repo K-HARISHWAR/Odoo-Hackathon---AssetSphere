@@ -122,7 +122,7 @@ class _SignupPageState extends State<SignupPage> {
                         decoration: BoxDecoration(
                           color: Theme.of(
                             context,
-                          ).colorScheme.error.withOpacity(0.1),
+                          ).colorScheme.error.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: Theme.of(context).colorScheme.error,
@@ -164,7 +164,7 @@ class _SignupPageState extends State<SignupPage> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: DropdownButtonFormField<String>(
-                        value: _selectedDepartment,
+                        initialValue: _selectedDepartment,
                         decoration: InputDecoration(
                           labelText: 'Department',
                           prefixIcon: const Icon(Icons.business),

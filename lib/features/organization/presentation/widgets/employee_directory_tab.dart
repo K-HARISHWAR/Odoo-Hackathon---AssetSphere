@@ -105,8 +105,8 @@ class EmployeeDirectoryTab extends StatelessWidget {
                                 emp.status == RecordStatus.inactive;
                             return DataRow(
                               color: isInactive
-                                  ? MaterialStateProperty.all(
-                                      Colors.grey.withOpacity(0.05),
+                                  ? WidgetStateProperty.all(
+                                      Colors.grey.withValues(alpha: 0.05),
                                     )
                                   : null,
                               cells: [

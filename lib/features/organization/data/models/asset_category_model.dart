@@ -1,5 +1,4 @@
 import 'package:assetsphere/features/organization/domain/entities/asset_category.dart';
-import 'package:assetsphere/features/organization/domain/entities/record_status.dart';
 
 class AssetCategoryModel extends AssetCategory {
   const AssetCategoryModel({
