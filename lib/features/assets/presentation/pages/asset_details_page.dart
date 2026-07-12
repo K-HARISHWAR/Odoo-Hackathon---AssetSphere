@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../domain/entities/asset_status.dart';
 import '../../data/repositories/asset_repository_impl.dart';
+import '../../domain/repositories/asset_repository.dart';
 import '../../data/datasources/assets_mock_datasource.dart';
 import '../controllers/asset_details_controller.dart';
 
 class AssetDetailsPage extends StatefulWidget {
   final String assetId;
+  final AssetRepository? repository;
+  final VoidCallback? onBack;
 
-  const AssetDetailsPage({super.key, required this.assetId});
+  const AssetDetailsPage({
+    super.key, 
+    required this.assetId,
+    this.repository,
+    this.onBack,
+  });
 
   @override
   State<AssetDetailsPage> createState() => _AssetDetailsPageState();
@@ -20,9 +28,12 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
   @override
   void initState() {
     super.initState();
-    _controller = AssetDetailsController(
-      repository: AssetRepositoryImpl(dataSource: AssetsMockDataSource()),
+    
+    final repo = widget.repository ?? AssetRepositoryImpl(
+      dataSource: AssetsMockDataSource(),
     );
+    
+    _controller = AssetDetailsController(repository: repo);
     _controller.loadAssetDetails(widget.assetId);
   }
 

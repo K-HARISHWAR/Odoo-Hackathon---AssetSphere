@@ -3,13 +3,21 @@ import '../../../../core/constants/app_sizes.dart';
 import '../../domain/entities/asset_condition.dart';
 import '../../data/datasources/assets_mock_datasource.dart';
 import '../../data/repositories/asset_repository_impl.dart';
+import '../../domain/repositories/asset_repository.dart';
 import '../../domain/usecases/add_asset_usecase.dart';
 import '../controllers/asset_registration_controller.dart';
 
 class RegisterAssetPage extends StatefulWidget {
+  final AssetRepository? repository;
   final VoidCallback? onSuccess;
+  final VoidCallback? onCancel;
 
-  const RegisterAssetPage({super.key, this.onSuccess});
+  const RegisterAssetPage({
+    super.key, 
+    this.repository,
+    this.onSuccess,
+    this.onCancel,
+  });
 
   @override
   State<RegisterAssetPage> createState() => _RegisterAssetPageState();
@@ -80,14 +88,16 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
   @override
   void initState() {
     super.initState();
-    final dataSource = AssetsMockDataSource();
-    final repository = AssetRepositoryImpl(dataSource: dataSource);
-    final useCase = AddAssetUseCase(repository);
-
-    _controller = AssetRegistrationController(
-      repository: repository,
-      addAsset: useCase,
+    
+    final repo = widget.repository ?? AssetRepositoryImpl(
+      dataSource: AssetsMockDataSource(),
     );
+    
+    _controller = AssetRegistrationController(
+      repository: repo,
+      addAsset: AddAssetUseCase(repo),
+    );
+
     _controller.prepareRegistration();
   }
 

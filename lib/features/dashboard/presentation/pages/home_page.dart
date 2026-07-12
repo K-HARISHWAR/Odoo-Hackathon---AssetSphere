@@ -17,8 +17,11 @@ class HomePage extends StatefulWidget {
   final VoidCallback? onMaintenanceRequest;
   final Function(String)? onSearch;
 
+  final DashboardController? controller;
+  
   const HomePage({
     super.key,
+    this.controller,
     this.onRegisterAsset,
     this.onViewDirectory,
     this.onBookResource,
@@ -32,22 +35,34 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final DashboardController _controller;
+  bool _ownsController = false;
 
   @override
   void initState() {
     super.initState();
-    // Manual Dependency Injection (as per Developer 2 constraints: no GetIt)
-    final dataSource = DashboardMockDataSource();
-    final repository = DashboardRepositoryImpl(dataSource: dataSource);
-    final useCase = GetDashboardDataUseCase(repository);
+    if (widget.controller != null) {
+      _controller = widget.controller!;
+    } else {
+      _ownsController = true;
+      // Manual Dependency Injection (as per Developer 2 constraints: no GetIt)
+      final dataSource = DashboardMockDataSource();
+      final repository = DashboardRepositoryImpl(dataSource: dataSource);
+      final useCase = GetDashboardDataUseCase(repository);
 
-    _controller = DashboardController(getDashboardData: useCase);
-    _controller.loadDashboardData();
+      _controller = DashboardController(getDashboardData: useCase);
+    }
+    
+    // Only load if not already loaded to prevent overriding shared state
+    if (_controller.kpis.isEmpty && !_controller.isLoading) {
+      _controller.loadDashboardData();
+    }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    if (_ownsController) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 

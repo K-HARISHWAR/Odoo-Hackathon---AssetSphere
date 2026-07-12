@@ -10,7 +10,13 @@ import 'asset_details_page.dart';
 
 class AssetDirectoryPage extends StatefulWidget {
   final String? initialSearchQuery;
-  const AssetDirectoryPage({super.key, this.initialSearchQuery});
+  final AssetDirectoryController? controller;
+  
+  const AssetDirectoryPage({
+    super.key, 
+    this.initialSearchQuery,
+    this.controller,
+  });
 
   @override
   State<AssetDirectoryPage> createState() => _AssetDirectoryPageState();
@@ -18,26 +24,35 @@ class AssetDirectoryPage extends StatefulWidget {
 
 class _AssetDirectoryPageState extends State<AssetDirectoryPage> {
   late final AssetDirectoryController _controller;
+  bool _ownsController = false;
 
   @override
   void initState() {
     super.initState();
-    final dataSource = AssetsMockDataSource();
-    final repository = AssetRepositoryImpl(dataSource: dataSource);
-    final useCase = GetAssetsUseCase(repository);
-
-    _controller = AssetDirectoryController(getAssets: useCase);
+    if (widget.controller != null) {
+      _controller = widget.controller!;
+    } else {
+      _ownsController = true;
+      final dataSource = AssetsMockDataSource();
+      final repository = AssetRepositoryImpl(dataSource: dataSource);
+      final useCase = GetAssetsUseCase(repository);
+      _controller = AssetDirectoryController(getAssets: useCase);
+    }
 
     if (widget.initialSearchQuery != null) {
       _controller.setSearchQuery(widget.initialSearchQuery!);
     }
 
-    _controller.loadAssets();
+    if (_controller.assets.isEmpty && !_controller.isLoading) {
+      _controller.loadAssets();
+    }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    if (_ownsController) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
