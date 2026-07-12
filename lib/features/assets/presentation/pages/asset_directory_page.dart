@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_sizes.dart';
+import '../../../../core/widgets/app_page_header.dart';
+import '../../../../core/widgets/app_status_chip.dart';
 import '../../domain/entities/asset.dart';
 import '../../domain/entities/asset_status.dart';
 import '../../data/datasources/assets_mock_datasource.dart';
@@ -61,53 +63,32 @@ class _AssetDirectoryPageState extends State<AssetDirectoryPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface.withAlpha(245),
-      appBar: AppBar(
-        toolbarHeight: 70,
-        leadingWidth: 70,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12),
-          child: Center(
-            child: IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 20,
-                color: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSizes.spacingLg,
+              AppSizes.spacingLg,
+              AppSizes.spacingLg,
+              0,
+            ),
+            child: AppPageHeader(
+              title: 'Asset Directory',
+              description: 'Manage and track all enterprise assets',
+              icon: Icon(
+                Icons.inventory_2_rounded,
+                size: 32,
+                color: theme.colorScheme.primary,
               ),
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+              action: ElevatedButton.icon(
+                onPressed: () => _controller.loadAssets(),
+                icon: const Icon(Icons.refresh_rounded),
+                label: const Text('Refresh'),
               ),
-              onPressed: () => Navigator.pop(context),
             ),
           ),
-        ),
-        title: const Text(
-          'Asset Directory',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        surfaceTintColor: Colors.transparent,
-        backgroundColor: theme.colorScheme.surface,
-        elevation: 0,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Divider(
-            height: 1,
-            color: theme.colorScheme.outlineVariant.withAlpha(100),
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () => _controller.loadAssets(),
-            icon: const Icon(Icons.refresh_rounded),
-          ),
-          const SizedBox(width: AppSizes.spacingMd),
-        ],
-      ),
-      body: Column(
-        children: [
           _buildFilterBar(theme),
           Expanded(
             child: ListenableBuilder(
@@ -292,7 +273,7 @@ class _AssetDirectoryPageState extends State<AssetDirectoryPage> {
                       DataCell(Text(asset.name)),
                       DataCell(Text(asset.category)),
                       DataCell(Text(asset.department)),
-                      DataCell(_StatusBadge(status: asset.status)),
+                      DataCell(AppStatusChip.fromAssetStatus(asset.status)),
                       DataCell(
                         IconButton(
                           icon: const Icon(
@@ -406,7 +387,7 @@ class _AssetModernCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    _StatusBadge(status: asset.status),
+                    AppStatusChip.fromAssetStatus(asset.status),
                   ],
                 ),
                 const SizedBox(height: AppSizes.spacingMd),
@@ -444,58 +425,5 @@ class _AssetModernCard extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  final AssetStatus status;
-  const _StatusBadge({required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: _getColor().withAlpha(30),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 6,
-            height: 6,
-            decoration: BoxDecoration(
-              color: _getColor(),
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            status.displayName,
-            style: TextStyle(
-              color: _getColor(),
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Color _getColor() {
-    switch (status) {
-      case AssetStatus.available:
-        return Colors.green;
-      case AssetStatus.allocated:
-        return Colors.blue;
-      case AssetStatus.maintenance:
-        return Colors.orange;
-      case AssetStatus.lost:
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_sizes.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../data/datasources/dashboard_mock_datasource.dart';
 import '../../data/repositories/dashboard_repository_impl.dart';
 import '../../domain/usecases/get_dashboard_data_usecase.dart';
@@ -71,56 +70,7 @@ class _HomePageState extends State<HomePage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface.withAlpha(240),
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.colorScheme.surface,
-        surfaceTintColor: Colors.transparent,
-        title: Text(
-          AppStrings.appName,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: theme.colorScheme.primary,
-          ),
-        ),
-        actions: [
-          _buildSearchField(),
-          IconButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'Notifications module will be implemented by Developer 1',
-                  ),
-                ),
-              );
-            },
-            icon: Badge(
-              isLabelVisible:
-                  false, // Set to false to remove fake notification count
-              label: const Text('0'),
-              child: Icon(
-                Icons.notifications_outlined,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ),
-          const SizedBox(width: AppSizes.spacingMd),
-          const CircleAvatar(
-            radius: 18,
-            backgroundColor: Colors.blueAccent,
-            child: Text(
-              'AD',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(width: AppSizes.spacingMd),
-        ],
-      ),
+      backgroundColor: theme.colorScheme.surface,
       body: ListenableBuilder(
         listenable: _controller,
         builder: (context, _) {
@@ -141,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildWelcomeHeader(theme),
+                    _buildHeader(theme),
                     const SizedBox(height: AppSizes.spacingXl),
                     _buildKPIGrid(),
                     const SizedBox(height: AppSizes.spacingXl),
@@ -156,16 +106,58 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildHeader(ThemeData theme) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isDesktop = constraints.maxWidth > 600;
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Good Morning, Admin',
+                    style: theme.textTheme.headlineMedium,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Overview of your enterprise assets and resources.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isDesktop) ...[
+              _buildSearchField(),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.notifications_outlined),
+              ),
+              const SizedBox(width: AppSizes.spacingMd),
+              const CircleAvatar(
+                radius: 20,
+                child: Icon(Icons.person),
+              ),
+            ],
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildSearchField() {
     return Container(
       width: 250,
       height: 40,
       margin: const EdgeInsets.only(right: AppSizes.spacingMd),
       decoration: BoxDecoration(
-        color: Theme.of(
-          context,
-        ).colorScheme.surfaceContainerHighest.withAlpha(100),
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5)),
       ),
       child: TextField(
         onSubmitted: (value) => widget.onSearch?.call(value),
@@ -174,31 +166,12 @@ class _HomePageState extends State<HomePage> {
           hintStyle: TextStyle(fontSize: 13),
           prefixIcon: Icon(Icons.search, size: 18),
           border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(vertical: 10),
+          fillColor: Colors.transparent,
         ),
       ),
-    );
-  }
-
-  Widget _buildWelcomeHeader(ThemeData theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Good Morning, Admin',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            letterSpacing: -0.5,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Overview of your enterprise assets and resources.',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
     );
   }
 
@@ -225,7 +198,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisCount: crossAxisCount,
             crossAxisSpacing: AppSizes.spacingLg,
             mainAxisSpacing: AppSizes.spacingLg,
-            mainAxisExtent: 160,
+            mainAxisExtent: 140, // Reduced from 160 to make it sleeker
           ),
           itemCount: _controller.kpis.length,
           itemBuilder: (context, index) {

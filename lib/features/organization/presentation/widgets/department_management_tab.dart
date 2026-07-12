@@ -71,100 +71,129 @@ class DepartmentManagementTab extends StatelessWidget {
             Expanded(
               child: controller.filteredDepartments.isEmpty
                   ? const Center(child: Text('No departments found.'))
-                  : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: SingleChildScrollView(
-                        child: DataTable(
-                          columns: const [
-                            DataColumn(label: Text('Code')),
-                            DataColumn(label: Text('Name')),
-                            DataColumn(label: Text('Parent Department')),
-                            DataColumn(label: Text('Head')),
-                            DataColumn(label: Text('Status')),
-                            DataColumn(label: Text('Actions')),
-                          ],
-                          rows: controller.filteredDepartments.map((dept) {
-                            return DataRow(
-                              cells: [
-                                DataCell(Text(dept.code)),
-                                DataCell(Text(dept.name)),
-                                DataCell(
-                                  Text(dept.parentDepartmentName ?? '-'),
-                                ),
-                                DataCell(Text(dept.departmentHeadName ?? '-')),
-                                DataCell(StatusBadge(status: dept.status)),
-                                DataCell(
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.edit, size: 20),
-                                        tooltip: 'Edit',
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (ctx) =>
-                                                DepartmentFormDialog(
-                                                  controller: controller,
-                                                  department: dept,
-                                                ),
-                                          );
-                                        },
+                  : LayoutBuilder(
+                      builder: (context, constraints) {
+                        if (constraints.maxWidth < 600) {
+                          // Mobile layout
+                          return ListView.builder(
+                            itemCount: controller.filteredDepartments.length,
+                            itemBuilder: (context, index) {
+                              final dept = controller.filteredDepartments[index];
+                              return Card(
+                                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                child: ListTile(
+                                  title: Text(dept.name),
+                                  subtitle: Text('Code: ${dept.code}'),
+                                  trailing: StatusBadge(status: dept.status),
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (ctx) => DepartmentFormDialog(
+                                        controller: controller,
+                                        department: dept,
                                       ),
-                                      IconButton(
-                                        icon: Icon(
-                                          dept.status == RecordStatus.active
-                                              ? Icons.block
-                                              : Icons.check_circle,
-                                          size: 20,
-                                          color:
-                                              dept.status == RecordStatus.active
-                                              ? Colors.red
-                                              : Colors.green,
-                                        ),
-                                        tooltip:
-                                            dept.status == RecordStatus.active
-                                            ? 'Deactivate'
-                                            : 'Activate',
-                                        onPressed: () async {
-                                          final confirm = await showDialog<bool>(
-                                            context: context,
-                                            builder: (ctx) => AlertDialog(
-                                              title: Text(
-                                                '${dept.status == RecordStatus.active ? 'Deactivate' : 'Activate'} Department?',
-                                              ),
-                                              content: Text(
-                                                'Are you sure you want to change the status of ${dept.name}?',
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(ctx, false),
-                                                  child: const Text('Cancel'),
-                                                ),
-                                                ElevatedButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(ctx, true),
-                                                  child: const Text('Confirm'),
-                                                ),
-                                              ],
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        }
+                        
+                        // Desktop layout
+                        return Card(
+                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: SingleChildScrollView(
+                              child: DataTable(
+                                headingRowColor: WidgetStateProperty.all(
+                                  Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                                ),
+                                columns: const [
+                                  DataColumn(label: Text('Code')),
+                                  DataColumn(label: Text('Name')),
+                                  DataColumn(label: Text('Parent Department')),
+                                  DataColumn(label: Text('Head')),
+                                  DataColumn(label: Text('Status')),
+                                  DataColumn(label: Text('Actions')),
+                                ],
+                                rows: controller.filteredDepartments.map((dept) {
+                                  return DataRow(
+                                    cells: [
+                                      DataCell(Text(dept.code)),
+                                      DataCell(Text(dept.name)),
+                                      DataCell(Text(dept.parentDepartmentName ?? '-')),
+                                      DataCell(Text(dept.departmentHeadName ?? '-')),
+                                      DataCell(StatusBadge(status: dept.status)),
+                                      DataCell(
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(Icons.edit, size: 20),
+                                              tooltip: 'Edit',
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (ctx) => DepartmentFormDialog(
+                                                    controller: controller,
+                                                    department: dept,
+                                                  ),
+                                                );
+                                              },
                                             ),
-                                          );
-                                          if (confirm == true) {
-                                            controller.toggleDepartmentStatus(
-                                              dept.id,
-                                            );
-                                          }
-                                        },
+                                            IconButton(
+                                              icon: Icon(
+                                                dept.status == RecordStatus.active
+                                                    ? Icons.block
+                                                    : Icons.check_circle,
+                                                size: 20,
+                                                color: dept.status == RecordStatus.active
+                                                    ? Colors.red
+                                                    : Colors.green,
+                                              ),
+                                              tooltip: dept.status == RecordStatus.active
+                                                  ? 'Deactivate'
+                                                  : 'Activate',
+                                              onPressed: () async {
+                                                final confirm = await showDialog<bool>(
+                                                  context: context,
+                                                  builder: (ctx) => AlertDialog(
+                                                    title: Text(
+                                                      '${dept.status == RecordStatus.active ? 'Deactivate' : 'Activate'} Department?',
+                                                    ),
+                                                    content: Text(
+                                                      'Are you sure you want to change the status of ${dept.name}?',
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () => Navigator.pop(ctx, false),
+                                                        child: const Text('Cancel'),
+                                                      ),
+                                                      ElevatedButton(
+                                                        onPressed: () => Navigator.pop(ctx, true),
+                                                        child: const Text('Confirm'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                                if (confirm == true) {
+                                                  controller.toggleDepartmentStatus(dept.id);
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
-                                  ),
-                                ),
-                              ],
-                            );
-                          }).toList(),
-                        ),
-                      ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:assetsphere/core/constants/app_sizes.dart';
 
 class AuthFormContainer extends StatelessWidget {
   final Widget child;
@@ -9,27 +10,28 @@ class AuthFormContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isMobile = constraints.maxWidth < 700;
-        final cardWidth = isMobile ? constraints.maxWidth * 0.9 : 450.0;
+        final isMobile = constraints.maxWidth < 600;
+        final cardWidth = isMobile ? constraints.maxWidth * 0.9 : 420.0;
 
         return Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
-              vertical: 24.0,
-              horizontal: 16.0,
+              vertical: AppSizes.spacingXl,
+              horizontal: AppSizes.spacingLg,
             ),
             child: SizedBox(
               width: cardWidth,
-              child: Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: child,
-                ),
-              ),
+              child: isMobile
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: AppSizes.spacingXl),
+                      child: child,
+                    )
+                  : Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSizes.spacingXl),
+                        child: child,
+                      ),
+                    ),
             ),
           ),
         );

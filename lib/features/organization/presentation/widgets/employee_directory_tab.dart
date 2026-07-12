@@ -48,7 +48,7 @@ class EmployeeDirectoryTab extends StatelessWidget {
                               ...EmployeeRole.values.map(
                                 (r) => DropdownMenuItem(
                                   value: r,
-                                  child: Text(r.name),
+                                  child: Text(r.displayName),
                                 ),
                               ),
                             ],
@@ -87,167 +87,190 @@ class EmployeeDirectoryTab extends StatelessWidget {
             Expanded(
               child: controller.filteredEmployees.isEmpty
                   ? const Center(child: Text('No employees found.'))
-                  : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: SingleChildScrollView(
-                        child: DataTable(
-                          columns: const [
-                            DataColumn(label: Text('Code')),
-                            DataColumn(label: Text('Name')),
-                            DataColumn(label: Text('Email')),
-                            DataColumn(label: Text('Department')),
-                            DataColumn(label: Text('Role')),
-                            DataColumn(label: Text('Status')),
-                            DataColumn(label: Text('Actions')),
-                          ],
-                          rows: controller.filteredEmployees.map((emp) {
-                            final isInactive =
-                                emp.status == RecordStatus.inactive;
-                            return DataRow(
-                              color: isInactive
-                                  ? WidgetStateProperty.all(
-                                      Colors.grey.withValues(alpha: 0.05),
-                                    )
-                                  : null,
-                              cells: [
-                                DataCell(
-                                  Text(
-                                    emp.employeeCode,
-                                    style: TextStyle(
-                                      color: isInactive ? Colors.grey : null,
-                                    ),
-                                  ),
-                                ),
-                                DataCell(
-                                  Text(
-                                    emp.fullName,
-                                    style: TextStyle(
-                                      color: isInactive ? Colors.grey : null,
-                                    ),
-                                  ),
-                                ),
-                                DataCell(
-                                  Text(
-                                    emp.email,
-                                    style: TextStyle(
-                                      color: isInactive ? Colors.grey : null,
-                                    ),
-                                  ),
-                                ),
-                                DataCell(
-                                  Text(
-                                    emp.departmentName,
-                                    style: TextStyle(
-                                      color: isInactive ? Colors.grey : null,
-                                    ),
-                                  ),
-                                ),
-                                DataCell(
-                                  Text(
-                                    emp.role.name,
-                                    style: TextStyle(
-                                      color: isInactive ? Colors.grey : null,
-                                    ),
-                                  ),
-                                ),
-                                DataCell(StatusBadge(status: emp.status)),
-                                DataCell(
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.business,
-                                          size: 20,
-                                        ),
-                                        tooltip: 'Change Department',
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (ctx) =>
-                                                EmployeeDepartmentDialog(
-                                                  controller: controller,
-                                                  employee: emp,
-                                                ),
-                                          );
-                                        },
+                  : LayoutBuilder(
+                      builder: (context, constraints) {
+                        if (constraints.maxWidth < 600) {
+                          // Mobile layout
+                          return ListView.builder(
+                            itemCount: controller.filteredEmployees.length,
+                            itemBuilder: (context, index) {
+                              final emp = controller.filteredEmployees[index];
+                              return Card(
+                                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                child: ListTile(
+                                  title: Text(emp.fullName),
+                                  subtitle: Text('${emp.role.displayName} • ${emp.departmentName}'),
+                                  trailing: StatusBadge(status: emp.status),
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (ctx) => EmployeeRoleDialog(
+                                        controller: controller,
+                                        employee: emp,
                                       ),
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.admin_panel_settings,
-                                          size: 20,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        }
+
+                        // Desktop layout
+                        return Card(
+                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: SingleChildScrollView(
+                              child: DataTable(
+                                headingRowColor: WidgetStateProperty.all(
+                                  Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                                ),
+                                columns: const [
+                                  DataColumn(label: Text('Code')),
+                                  DataColumn(label: Text('Name')),
+                                  DataColumn(label: Text('Email')),
+                                  DataColumn(label: Text('Department')),
+                                  DataColumn(label: Text('Role')),
+                                  DataColumn(label: Text('Status')),
+                                  DataColumn(label: Text('Actions')),
+                                ],
+                                rows: controller.filteredEmployees.map((emp) {
+                                  final isInactive = emp.status == RecordStatus.inactive;
+                                  return DataRow(
+                                    color: isInactive
+                                        ? WidgetStateProperty.all(
+                                            Colors.grey.withValues(alpha: 0.05),
+                                          )
+                                        : null,
+                                    cells: [
+                                      DataCell(
+                                        Text(
+                                          emp.employeeCode,
+                                          style: TextStyle(
+                                            color: isInactive ? Colors.grey : null,
+                                          ),
                                         ),
-                                        tooltip: 'Change Role',
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (ctx) =>
-                                                EmployeeRoleDialog(
-                                                  controller: controller,
-                                                  employee: emp,
-                                                ),
-                                          );
-                                        },
                                       ),
-                                      IconButton(
-                                        icon: Icon(
-                                          emp.status == RecordStatus.active
-                                              ? Icons.block
-                                              : Icons.check_circle,
-                                          size: 20,
-                                          color:
-                                              emp.status == RecordStatus.active
-                                              ? Colors.red
-                                              : Colors.green,
+                                      DataCell(
+                                        Text(
+                                          emp.fullName,
+                                          style: TextStyle(
+                                            color: isInactive ? Colors.grey : null,
+                                          ),
                                         ),
-                                        tooltip:
-                                            emp.status == RecordStatus.active
-                                            ? 'Deactivate'
-                                            : 'Activate',
-                                        onPressed: () async {
-                                          final confirm = await showDialog<bool>(
-                                            context: context,
-                                            builder: (ctx) => AlertDialog(
-                                              title: Text(
-                                                '${emp.status == RecordStatus.active ? 'Deactivate' : 'Activate'} Employee?',
-                                              ),
-                                              content: Text(
-                                                'Are you sure you want to change the status of ${emp.fullName}?',
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(ctx, false),
-                                                  child: const Text('Cancel'),
-                                                ),
-                                                ElevatedButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(ctx, true),
-                                                  child: const Text('Confirm'),
-                                                ),
-                                              ],
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          emp.email,
+                                          style: TextStyle(
+                                            color: isInactive ? Colors.grey : null,
+                                          ),
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          emp.departmentName,
+                                          style: TextStyle(
+                                            color: isInactive ? Colors.grey : null,
+                                          ),
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          emp.role.displayName,
+                                          style: TextStyle(
+                                            color: isInactive ? Colors.grey : null,
+                                          ),
+                                        ),
+                                      ),
+                                      DataCell(StatusBadge(status: emp.status)),
+                                      DataCell(
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(Icons.business, size: 20),
+                                              tooltip: 'Change Department',
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (ctx) => EmployeeDepartmentDialog(
+                                                    controller: controller,
+                                                    employee: emp,
+                                                  ),
+                                                );
+                                              },
                                             ),
-                                          );
-                                          if (confirm == true) {
-                                            controller.updateEmployeeStatus(
-                                              id: emp.id,
-                                              status:
-                                                  emp.status ==
-                                                      RecordStatus.active
-                                                  ? RecordStatus.inactive
-                                                  : RecordStatus.active,
-                                            );
-                                          }
-                                        },
+                                            IconButton(
+                                              icon: const Icon(Icons.admin_panel_settings, size: 20),
+                                              tooltip: 'Change Role',
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (ctx) => EmployeeRoleDialog(
+                                                    controller: controller,
+                                                    employee: emp,
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: Icon(
+                                                emp.status == RecordStatus.active
+                                                    ? Icons.block
+                                                    : Icons.check_circle,
+                                                size: 20,
+                                                color: emp.status == RecordStatus.active
+                                                    ? Colors.red
+                                                    : Colors.green,
+                                              ),
+                                              tooltip: emp.status == RecordStatus.active
+                                                  ? 'Deactivate'
+                                                  : 'Activate',
+                                              onPressed: () async {
+                                                final confirm = await showDialog<bool>(
+                                                  context: context,
+                                                  builder: (ctx) => AlertDialog(
+                                                    title: Text(
+                                                      '${emp.status == RecordStatus.active ? 'Deactivate' : 'Activate'} Employee?',
+                                                    ),
+                                                    content: Text(
+                                                      'Are you sure you want to change the status of ${emp.fullName}?',
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () => Navigator.pop(ctx, false),
+                                                        child: const Text('Cancel'),
+                                                      ),
+                                                      ElevatedButton(
+                                                        onPressed: () => Navigator.pop(ctx, true),
+                                                        child: const Text('Confirm'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                                if (confirm == true) {
+                                                  controller.updateEmployeeStatus(
+                                                    id: emp.id,
+                                                    status: emp.status == RecordStatus.active
+                                                        ? RecordStatus.inactive
+                                                        : RecordStatus.active,
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
-                                  ),
-                                ),
-                              ],
-                            );
-                          }).toList(),
-                        ),
-                      ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
             ),
           ],

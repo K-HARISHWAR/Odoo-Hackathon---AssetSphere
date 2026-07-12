@@ -37,7 +37,7 @@ class _EmployeeRoleDialogState extends State<EmployeeRoleDialog> {
           children: [
             Text('Employee: ${widget.employee.fullName}'),
             const SizedBox(height: 8),
-            Text('Current role: ${widget.employee.role.name}'),
+            Text('Current role: ${widget.employee.role.displayName}'),
             const SizedBox(height: 16),
             const Text(
               'Elevated roles grant additional permissions. Please confirm before assigning.',
@@ -51,7 +51,7 @@ class _EmployeeRoleDialogState extends State<EmployeeRoleDialog> {
                 border: OutlineInputBorder(),
               ),
               items: EmployeeRole.values.map((role) {
-                return DropdownMenuItem(value: role, child: Text(role.name));
+                return DropdownMenuItem(value: role, child: Text(role.displayName));
               }).toList(),
               onChanged: (val) {
                 if (val != null) setState(() => _selectedRole = val);

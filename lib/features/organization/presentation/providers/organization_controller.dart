@@ -372,7 +372,7 @@ class OrganizationController extends ChangeNotifier {
           newRole: newRole,
           changedAt: DateTime.now(),
           description:
-              'Role changed from ${oldEmp.role.name} to ${newRole.name}',
+              'Role changed from ${oldEmp.role.displayName} to ${newRole.displayName}',
         ),
       );
 

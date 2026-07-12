@@ -3,6 +3,8 @@ import 'package:assetsphere/app/session/app_session_controller.dart';
 import 'package:assetsphere/features/authentication/presentation/providers/auth_controller.dart';
 import 'package:assetsphere/app/router/app_routes.dart';
 import 'package:assetsphere/app/permissions/app_permissions.dart';
+import 'package:assetsphere/features/authentication/domain/entities/authenticated_user.dart';
+import 'package:assetsphere/core/constants/app_sizes.dart';
 
 class MainAppShell extends StatefulWidget {
   final AppSessionController sessionController;
@@ -21,6 +23,29 @@ class MainAppShell extends StatefulWidget {
 }
 
 class _MainAppShellState extends State<MainAppShell> {
+  int _getSelectedIndex(String section, AuthRole? role) {
+    if (section == 'dashboard') return 0;
+    if (section == 'assets' && role != null && AppPermissions.canAccessAssets(role)) return 1;
+    if (section == 'organization' && role != null && AppPermissions.canAccessOrganizationSetup(role)) {
+      return AppPermissions.canAccessAssets(role) ? 2 : 1;
+    }
+    return 0;
+  }
+
+  void _onDestinationSelected(int index, AuthRole? role) {
+    if (index == 0) {
+      Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
+    } else if (index == 1) {
+      if (role != null && AppPermissions.canAccessAssets(role)) {
+        Navigator.pushReplacementNamed(context, AppRoutes.assets);
+      } else if (role != null && AppPermissions.canAccessOrganizationSetup(role)) {
+        Navigator.pushReplacementNamed(context, AppRoutes.organization);
+      }
+    } else if (index == 2) {
+      Navigator.pushReplacementNamed(context, AppRoutes.organization);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -32,8 +57,12 @@ class _MainAppShellState extends State<MainAppShell> {
           drawer: isDesktop ? null : _buildDrawer(context),
           body: Row(
             children: [
-              if (isDesktop) _buildSideNav(context),
-              Expanded(child: widget.child),
+              if (isDesktop) _buildDesktopNav(context, constraints.maxWidth),
+              Expanded(
+                child: ClipRect(
+                  child: widget.child,
+                ),
+              ),
             ],
           ),
         );
@@ -50,137 +79,180 @@ class _MainAppShellState extends State<MainAppShell> {
 
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
-      child: _buildNavigationItems(context, isDrawer: true),
-    );
-  }
-
-  Widget _buildSideNav(BuildContext context) {
-    return Container(
-      width: 250,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        border: Border(
-          right: BorderSide(
-            color: Theme.of(context).colorScheme.outlineVariant.withAlpha(50),
-          ),
-        ),
-      ),
-      child: _buildNavigationItems(context, isDrawer: false),
-    );
-  }
-
-  Widget _buildNavigationItems(BuildContext context, {required bool isDrawer}) {
-    final user = widget.sessionController.currentUser;
-    final role = user?.role;
-    
-    return ListenableBuilder(
-      listenable: widget.sessionController,
-      builder: (context, _) {
-        final currentSection = widget.sessionController.currentSection;
-        
-        return Column(
-          children: [
-            if (isDrawer)
+      child: ListenableBuilder(
+        listenable: widget.sessionController,
+        builder: (context, _) {
+          final user = widget.sessionController.currentUser;
+          final role = user?.role;
+          final currentSection = widget.sessionController.currentSection;
+          
+          return Column(
+            children: [
               UserAccountsDrawerHeader(
                 accountName: Text(user?.fullName ?? 'User'),
                 accountEmail: Text(user?.email ?? ''),
-                currentAccountPicture: const CircleAvatar(
-                  child: Icon(Icons.person),
+                currentAccountPicture: CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  child: Icon(
+                    Icons.person,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
-              )
-            else
-              Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Row(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
                   children: [
-                    Icon(
-                      Icons.blur_on, 
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 32,
+                    _DrawerNavItem(
+                      icon: Icons.dashboard_rounded,
+                      label: 'Dashboard',
+                      isSelected: currentSection == 'dashboard',
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
+                      },
                     ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      'AssetSphere',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                    if (role != null && AppPermissions.canAccessAssets(role))
+                      _DrawerNavItem(
+                        icon: Icons.inventory_2_rounded,
+                        label: 'Asset Directory',
+                        isSelected: currentSection == 'assets',
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.pushReplacementNamed(context, AppRoutes.assets);
+                        },
                       ),
-                    ),
+                    if (role != null && AppPermissions.canAccessOrganizationSetup(role))
+                      _DrawerNavItem(
+                        icon: Icons.business_rounded,
+                        label: 'Organization Setup',
+                        isSelected: currentSection == 'organization',
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.pushReplacementNamed(context, AppRoutes.organization);
+                        },
+                      ),
                   ],
                 ),
               ),
-            
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  _NavItem(
-                    icon: Icons.dashboard_rounded,
-                    label: 'Dashboard',
-                    isSelected: currentSection == 'dashboard',
-                    onTap: () {
-                      if (isDrawer) Navigator.pop(context);
-                      Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
-                    },
-                  ),
-                  
-                  if (role != null && AppPermissions.canAccessAssets(role))
-                    _NavItem(
-                      icon: Icons.inventory_2_rounded,
-                      label: 'Asset Directory',
-                      isSelected: currentSection == 'assets',
-                      onTap: () {
-                        if (isDrawer) Navigator.pop(context);
-                        Navigator.pushReplacementNamed(context, AppRoutes.assets);
-                      },
-                    ),
-                    
-                  if (role != null && AppPermissions.canAccessOrganizationSetup(role))
-                    _NavItem(
-                      icon: Icons.business_rounded,
-                      label: 'Organization Setup',
-                      isSelected: currentSection == 'organization',
-                      onTap: () {
-                        if (isDrawer) Navigator.pop(context);
-                        Navigator.pushReplacementNamed(context, AppRoutes.organization);
-                      },
-                    ),
-                ],
+              const Divider(),
+              ListTile(
+                leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
+                title: Text('Logout', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                onTap: _handleLogout,
+              ),
+              const SizedBox(height: AppSizes.spacingLg),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildDesktopNav(BuildContext context, double maxWidth) {
+    final isExtended = maxWidth > 1200; // Extend rail on very large screens
+
+    return ListenableBuilder(
+      listenable: widget.sessionController,
+      builder: (context, _) {
+        final user = widget.sessionController.currentUser;
+        final role = user?.role;
+        final currentSection = widget.sessionController.currentSection;
+        final selectedIndex = _getSelectedIndex(currentSection, role);
+
+        final destinations = <NavigationRailDestination>[
+          const NavigationRailDestination(
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard_rounded),
+            label: Text('Dashboard'),
+          ),
+        ];
+
+        if (role != null && AppPermissions.canAccessAssets(role)) {
+          destinations.add(
+            const NavigationRailDestination(
+              icon: Icon(Icons.inventory_2_outlined),
+              selectedIcon: Icon(Icons.inventory_2_rounded),
+              label: Text('Assets'),
+            ),
+          );
+        }
+
+        if (role != null && AppPermissions.canAccessOrganizationSetup(role)) {
+          destinations.add(
+            const NavigationRailDestination(
+              icon: Icon(Icons.business_outlined),
+              selectedIcon: Icon(Icons.business_rounded),
+              label: Text('Organization'),
+            ),
+          );
+        }
+
+        return Container(
+          decoration: BoxDecoration(
+            border: Border(
+              right: BorderSide(
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               ),
             ),
-            
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text('Logout', style: TextStyle(color: Colors.red)),
-              onTap: () async {
-                if (isDrawer) Navigator.pop(context);
-                await widget.authController.logout();
-                widget.sessionController.logout();
-                if (context.mounted) {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context, 
-                    AppRoutes.login, 
-                    (route) => false,
-                  );
-                }
-              },
-            ),
-            const SizedBox(height: 16),
-          ],
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: AppSizes.spacingLg),
+                child: Icon(
+                  Icons.blur_on,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: isExtended ? 40 : 32,
+                ),
+              ),
+              Expanded(
+                child: NavigationRail(
+                  extended: isExtended,
+                  selectedIndex: selectedIndex,
+                  onDestinationSelected: (index) => _onDestinationSelected(index, role),
+                  destinations: destinations,
+                  labelType: isExtended ? NavigationRailLabelType.none : NavigationRailLabelType.all,
+                  leading: const SizedBox(height: AppSizes.spacingMd),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSizes.spacingLg),
+                child: IconButton(
+                  icon: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
+                  tooltip: 'Logout',
+                  onPressed: _handleLogout,
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
   }
+
+  Future<void> _handleLogout() async {
+    await widget.authController.logout();
+    widget.sessionController.logout();
+    if (!mounted) return;
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.login,
+      (route) => false,
+    );
+  }
 }
 
-class _NavItem extends StatelessWidget {
+class _DrawerNavItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _NavItem({
+  const _DrawerNavItem({
     required this.icon,
     required this.label,
     required this.isSelected,
@@ -192,13 +264,16 @@ class _NavItem extends StatelessWidget {
     final theme = Theme.of(context);
     
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSizes.spacingMd,
+        vertical: AppSizes.spacingXs,
+      ),
       child: ListTile(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppSizes.radiusMd),
         ),
         selected: isSelected,
-        selectedTileColor: theme.colorScheme.primaryContainer.withAlpha(100),
+        selectedTileColor: theme.colorScheme.primaryContainer.withValues(alpha: 0.2),
         leading: Icon(
           icon,
           color: isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,

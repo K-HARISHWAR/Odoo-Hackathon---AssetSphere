@@ -120,34 +120,13 @@ class _RegisterAssetPageState extends State<RegisterAssetPage> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface.withAlpha(245),
       appBar: AppBar(
-        toolbarHeight: 70,
-        leadingWidth: 70,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12),
-          child: Center(
-            child: IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 20,
-                color: Colors.white,
-              ),
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
-        ),
         title: const Text(
           'Register New Asset',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        surfaceTintColor: Colors.transparent,
         backgroundColor: theme.colorScheme.surface,
         elevation: 0,
+        scrolledUnderElevation: 1,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Divider(

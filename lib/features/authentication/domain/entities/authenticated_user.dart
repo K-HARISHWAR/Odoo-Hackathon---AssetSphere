@@ -1,5 +1,19 @@
 enum AuthRole { employee, departmentHead, assetManager, admin }
 
+extension AuthRoleX on AuthRole {
+  String get displayName {
+    switch (this) {
+      case AuthRole.employee:
+        return 'Employee';
+      case AuthRole.departmentHead:
+        return 'Department Head';
+      case AuthRole.assetManager:
+        return 'Asset Manager';
+      case AuthRole.admin:
+        return 'System Admin';
+    }
+  }
+}
 class AuthenticatedUser {
   final String id;
   final String fullName;

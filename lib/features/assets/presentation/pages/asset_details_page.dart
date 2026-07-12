@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_sizes.dart';
-import '../../domain/entities/asset_status.dart';
+import '../../../../core/widgets/app_status_chip.dart';
+
 import '../../data/repositories/asset_repository_impl.dart';
 import '../../domain/repositories/asset_repository.dart';
 import '../../data/datasources/assets_mock_datasource.dart';
@@ -50,41 +51,13 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface.withAlpha(245),
       appBar: AppBar(
-        toolbarHeight: 70,
-        leadingWidth: 70,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12),
-          child: Center(
-            child: IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 20,
-                color: Colors.white,
-              ),
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
-        ),
         title: const Text(
           'Asset Profile',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        surfaceTintColor: Colors.transparent,
         backgroundColor: theme.colorScheme.surface,
         elevation: 0,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Divider(
-            height: 1,
-            color: theme.colorScheme.outlineVariant.withAlpha(100),
-          ),
-        ),
+        scrolledUnderElevation: 1,
         actions: [
           IconButton(
             onPressed: () {},
@@ -188,7 +161,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
               children: [
                 Row(
                   children: [
-                    _StatusBadge(status: asset.status),
+                    AppStatusChip.fromAssetStatus(asset.status),
                     const SizedBox(width: 8),
                     Hero(
                       tag: 'tag-${asset.id}',
@@ -278,7 +251,7 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
             },
             {
               'label': 'Current Condition',
-              'value': asset.condition.name.toUpperCase(),
+              'value': asset.condition.displayName.toUpperCase(),
             },
           ],
         ),
@@ -375,45 +348,6 @@ class _AssetDetailsPageState extends State<AssetDetailsPage> {
   }
 }
 
-class _StatusBadge extends StatelessWidget {
-  final AssetStatus status;
-  const _StatusBadge({required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: _getColor().withAlpha(30),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        status.displayName.toUpperCase(),
-        style: TextStyle(
-          color: _getColor(),
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 0.5,
-        ),
-      ),
-    );
-  }
-
-  Color _getColor() {
-    switch (status) {
-      case AssetStatus.available:
-        return Colors.green;
-      case AssetStatus.allocated:
-        return Colors.blue;
-      case AssetStatus.maintenance:
-        return Colors.orange;
-      case AssetStatus.lost:
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
-  }
-}
 
 class _TimelineItem extends StatelessWidget {
   final String title;
