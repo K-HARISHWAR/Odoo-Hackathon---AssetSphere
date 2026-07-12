@@ -1,62 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:assetsphere/app/theme/app_theme.dart';
 import 'package:assetsphere/core/constants/app_strings.dart';
-import 'package:assetsphere/features/dashboard/presentation/pages/home_page.dart';
-import 'package:assetsphere/features/assets/presentation/pages/asset_directory_page.dart';
-import 'package:assetsphere/features/assets/presentation/pages/register_asset_page.dart';
+import 'package:assetsphere/app/di/app_dependencies.dart';
+import 'package:assetsphere/app/session/app_session_controller.dart';
+import 'package:assetsphere/app/router/app_router.dart';
+import 'package:assetsphere/app/router/app_routes.dart';
 
-class AssetSphereApp extends StatelessWidget {
-  const AssetSphereApp({super.key});
+class AssetSphereApp extends StatefulWidget {
+  final AppDependencies dependencies;
+  final AppSessionController sessionController;
+
+  const AssetSphereApp({
+    super.key,
+    required this.dependencies,
+    required this.sessionController,
+  });
+
+  @override
+  State<AssetSphereApp> createState() => _AssetSphereAppState();
+}
+
+class _AssetSphereAppState extends State<AssetSphereApp> {
+  late final AppRouter _appRouter;
+
+  @override
+  void initState() {
+    super.initState();
+    _appRouter = AppRouter(
+      dependencies: widget.dependencies,
+      sessionController: widget.sessionController,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: AppStrings.appName,
-      theme: AppTheme.lightTheme,
-      home: Builder(
-        builder: (context) => HomePage(
-          onRegisterAsset: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => RegisterAssetPage(
-                  onSuccess: () => Navigator.pop(context),
-                ),
-              ),
-            );
-          },
-          onViewDirectory: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AssetDirectoryPage()),
-            );
-          },
-          onBookResource: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Bookings module will be implemented by Developer 1'),
-              ),
-            );
-          },
-          onMaintenanceRequest: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Maintenance module will be implemented by Developer 1'),
-              ),
-            );
-          },
-          onSearch: (query) {
-            if (query.trim().isEmpty) return;
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AssetDirectoryPage(initialSearchQuery: query),
-              ),
-            );
-          },
-        ),
-      ),
+    return ListenableBuilder(
+      listenable: widget.sessionController,
+      builder: (context, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: AppStrings.appName,
+          theme: AppTheme.lightTheme,
+          initialRoute: AppRoutes.login,
+          onGenerateRoute: _appRouter.onGenerateRoute,
+        );
+      },
     );
   }
 }
